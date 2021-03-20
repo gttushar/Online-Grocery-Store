@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, session
 from app import app
 from app import db
 
@@ -23,6 +23,8 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
 
+        session['username']=user.username
+        session['user_type']='Consumer'
         login_user(user)
         flash('User successfully logged in')
         next_page=request.args.get('next')
@@ -33,7 +35,10 @@ def login():
 
 @app.route('/logout')
 def logout():
+    print(session['username'])
     logout_user()
+    session.pop('username',None)
+    session.pop('user_type',None)
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
