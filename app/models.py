@@ -89,3 +89,19 @@ class Order(db.Model):
 class City(db.Model):
     city_id = db.Column(db.String(5),primary_key=True)
     city_name = db.Column(db.String(30),nullable=False)
+
+class Contains(db.Model):
+    order_id=db.Column(db.Integer,primary_key=True,db.ForeignKey('Order.order_id'))
+    item_id=db.Column(db.Integer,primary_key=True,db.ForeignKey('Item.item_id'))
+    quantity= db.Column(db.Float(precision=5),nullable=False)
+
+class Item-city(db.Model):
+    city_id=db.Column(db.String(5),primary_key=True,db.ForeignKey('City.city_id'))
+    item_id=db.Column(db.Integer,primary_key=True,db.ForeignKey('Item.item_id'))
+    quantity= db.Column(db.Float(precision=5),nullable=False)
+
+class Review(db.Model):
+    cid = db.Column(db.Integer,primary_key=True,db.ForeignKey('Consumer.cid'))
+    item_id=db.Column(db.Integer,primary_key=True,db.ForeignKey('Item.item_id'))
+    review = db.Column(db.String(100))
+    rating = db.Column(db.Integer,nullable=False)
