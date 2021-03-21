@@ -1,4 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, session
+import sqlalchemy
+from sqlalchemy import func
+from sqlalchemy import text
 from app import app
 from app import db
 
@@ -49,6 +52,8 @@ def register():
     if form.validate_on_submit():
         user = Consumer(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
+        count=db.session.query(func.count('*')).select_from(Consumer).scalar()
+        user.cid=count+1
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
