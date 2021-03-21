@@ -47,7 +47,7 @@ class Manager(UserMixin, db.Model):
     def get_id(self):
         return self.username
 
-class Deliviry_Agent(UserMixin, db.Model):
+class Delivery_agent(UserMixin, db.Model):
     agent_id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
@@ -72,36 +72,36 @@ class Item(db.Model):
     category = db.Column(db.String(30),nullable=False)
     name = db.Column(db.String(50),nullable=False)
     description = db.Column(db.String(100))
-    brand = db.Column(db.String(30),db.ForeignKey('Manager.brand'),nullable = False)
+    brand = db.Column(db.String(30),db.ForeignKey('manager.brand'),nullable = False)
     avg_rating = db.Column(db.Float(precision=2),nullable=False)
     price = db.Column(db.Float(precision=5),nullable=False)
-    quantity = db.Column(db.Float(precision=5),nullable=False)
+    quantity = db.Column(db.Integer,nullable=False)
 
 class Order(db.Model):
     order_id = db.Column(db.Integer,primary_key=True)
-    cid = db.Column(db.Integer,db.ForeignKey('Consumer.cid'),nullable=False)
+    cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),nullable=False)
     amount = db.Column(db.Float(precision=5),nullable=False)
     status = db.Column(db.String(15),nullable=False)
     time_of_order = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
     time_of_delivery = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    agent_id=db.Column(db.Integer,db.ForeignKey('Delivery_Agent'),nullable=False)
+    agent_id=db.Column(db.Integer,db.ForeignKey('delivery_agent.agent_id'),nullable=False)
 
 class City(db.Model):
     city_id = db.Column(db.String(5),primary_key=True)
     city_name = db.Column(db.String(30),nullable=False)
 
 class Contains(db.Model):
-    order_id=db.Column(db.Integer,db.ForeignKey('Order.order_id'),primary_key=True)
-    item_id=db.Column(db.Integer,db.ForeignKey('Item.item_id'),primary_key=True)
-    quantity= db.Column(db.Float(precision=5),nullable=False)
+    order_id=db.Column(db.Integer,db.ForeignKey('order.order_id'),primary_key=True)
+    item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'), primary_key=True)
+    quantity= db.Column(db.Integer,nullable=False)
 
 class Itemcity(db.Model):
-    city_id=db.Column(db.String(5),db.ForeignKey('City.city_id'),primary_key=True)
-    item_id=db.Column(db.Integer,db.ForeignKey('Item.item_id'),primary_key=True)
-    quantity= db.Column(db.Float(precision=5),nullable=False)
+    city_id=db.Column(db.String(5),db.ForeignKey('city.city_id'), primary_key=True)
+    item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
+    quantity= db.Column(db.Integer,nullable=False)
 
 class Review(db.Model):
-    cid = db.Column(db.Integer,db.ForeignKey('Consumer.cid'),primary_key=True)
-    item_id=db.Column(db.Integer,db.ForeignKey('Item.item_id'),primary_key=True)
+    cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),primary_key=True)
+    item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
     review = db.Column(db.String(100))
     rating = db.Column(db.Integer,nullable=False)

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,BooleanField,SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired,EqualTo,Length,Email,ValidationError
 from app.models import Consumer
 
@@ -26,3 +26,6 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Email id is already registered')
 
 
+class SearchForm(FlaskForm):
+    search_text=TextAreaField(None,validators=[DataRequired()])
+    submit=SubmitField('Search')
