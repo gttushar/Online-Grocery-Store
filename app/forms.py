@@ -15,11 +15,6 @@ class RegistrationForm(FlaskForm):
     password=PasswordField('Password', validators=[ DataRequired(),Length(min=6) ])
     confirm_password=PasswordField('Confirm password', validators=[ DataRequired(),EqualTo('password') ])
     submit=SubmitField('Sign Up', validators=[ DataRequired() ])
-
-    def validate_username(self,username):
-        user=Consumer.query.filter_by(username=username.data).first()
-        if user is not None:
-            raise ValidationError('Username already exists')
     
     def validate_email(self,email):
         user=Consumer.query.filter_by(email=email.data).first()
@@ -33,8 +28,12 @@ class Consumer_Registration_Form(RegistrationForm,FlaskForm):
 	phone_no = StringField('Phone number', validators=[ DataRequired(), Length(min=10, max=10)])
 	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
+    def validate_username(self,username):
+        user=Consumer.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Consumer username already exists')
+
 	def validate_phone_no(self, phone_no):
-		print(type(phone_no.data))
 		if not phone_no.data.isnumeric():
 			raise ValidationError('Invalid Phone Number')
 
@@ -43,10 +42,20 @@ class Manager_Registration_Form(RegistrationForm,FlaskForm):
 	brand = StringField('City', validators=[ DataRequired(), Length(max=30)])
 	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
+    def validate_username(self,username):
+        user=Manager.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Manager username already exists')
+
 class Agent_Registration_Form(RegistrationForm,FlaskForm):
 	# basic_details = RegistrationForm()
 	city_id = StringField('City', validators=[ DataRequired(), Length(max=64)])
 	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
+
+    def validate_username(self,username):
+        user=Delivery_agent.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Delivery Agent username already exists')
 
 class SearchForm(FlaskForm):
     search_text=TextAreaField(None,validators=[DataRequired()])

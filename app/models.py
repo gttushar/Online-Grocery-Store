@@ -28,7 +28,7 @@ class Consumer(UserMixin, db.Model):
     
 @login.user_loader
 def load_user(username):
-    return Consumer.query.get(username)
+    return Consumer.query.filter_by(username=username).first()
 
 class Manager(UserMixin, db.Model):
     manager_id = db.Column(db.Integer,primary_key=True)

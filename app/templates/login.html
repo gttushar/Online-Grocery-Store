@@ -30,5 +30,12 @@
             {% endfor %}
         </p>
         <p>{{ form.submit() }}</p>
+        <p>
+            Don't have an account ?<br>
+            <a href = {{ url_for('register_consumer') }}> Register as Consumer </a>     <br>
+            <a href = {{ url_for('register_manager') }}> Register as Manager </a>       <br>
+            <a href = {{ url_for('register_agent') }}> Register as Delivery Agent </a>  <br>
+        </p>
+
     </form>
 {% endblock content %}

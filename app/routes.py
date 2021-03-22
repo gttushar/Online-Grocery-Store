@@ -27,16 +27,13 @@ def login():
 		user=None
 		if form.user_type.data == "Consumer":
 			user=Consumer.query.filter_by(username=form.username.data).first()
-			print("Consumer logged in", file=sys.stderr)
+			# print("Consumer logged in", file=sys.stderr)
 		elif form.user_type.data == "Manager":
 			user=Manager.query.filter_by(username=form.username.data).first()
-			print("Manager logged in", file=sys.stderr)
 		elif form.user_type.data == "Delivery_agent":
 			user=Delivery_agent.query.filter_by(username=form.username.data).first() 
-			print("Delivery_agent logged in", file=sys.stderr)
 		if user is None or not user.check_password(form.password.data):
 			flash('Invalid username or password')
-			print("Invalid username or password", file=sys.stderr)
 			return redirect(url_for('login'))
 
 		session['username']=user.username
