@@ -1,5 +1,6 @@
 from app import db
 from app import login
+from app.routes import session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
@@ -99,10 +100,16 @@ class Contains(db.Model):
 class Itemcity(db.Model):
     city_id=db.Column(db.String(5),db.ForeignKey('city.city_id'), primary_key=True)
     item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
-    quantity= db.Column(db.Integer,nullable=False)
+    #quantity= db.Column(db.Integer,nullable=False)
 
 class Review(db.Model):
     cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),primary_key=True)
     item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
     review = db.Column(db.String(100))
     rating = db.Column(db.Integer,nullable=False)
+
+class Cart(db.Model):
+    cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),primary_key=True)
+    item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
+    quantity=db.Column(db.Integer,nullable=False)
+    db.CheckConstraint('quantity>0','check1')
