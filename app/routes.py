@@ -4,8 +4,9 @@ from sqlalchemy import func
 from sqlalchemy import text
 from app import app
 from app import db
+import sys
 
-from app.forms import LoginForm, RegistrationForm, Consumer_Registration_Form, Manager_Registration_Form, Agent_Registration_Form, SearchForm
+from app.forms import * #LoginForm, RegistrationForm, Consumer_Registration_Form, Manager_Registration_Form, Agent_Registration_Form, SearchForm
 from app.models import Consumer, Manager, Delivery_agent
 from flask_login import current_user,login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -13,6 +14,7 @@ from werkzeug.urls import url_parse
 @app.route('/home')
 @login_required
 def home():
+	print(session['user_type'], " Home : ", session['username'], file=sys.stderr)
 	return render_template('home.html',title='home')
 
 @app.route('/login',methods=['GET','POST'])
@@ -21,15 +23,26 @@ def login():
 		return redirect(url_for('home'))
 	form=LoginForm()
 	if form.validate_on_submit():
-		user=Consumer.query.filter_by(username=form.username.data).first()
+		user=None
+		if form.user_type.data == "Consumer":
+			user=Consumer.query.filter_by(username=form.username.data).first()
+			print("Consumer logged in", file=sys.stderr)
+		elif form.user_type.data == "Manager":
+			user=Manager.query.filter_by(username=form.username.data).first()
+			print("Manager logged in", file=sys.stderr)
+		elif form.user_type.data == "Delivery_agent":
+			user=Delivery_agent.query.filter_by(username=form.username.data).first() 
+			print("Delivery_agent logged in", file=sys.stderr)
 		if user is None or not user.check_password(form.password.data):
 			flash('Invalid username or password')
+			print("Invalid username or password", file=sys.stderr)
 			return redirect(url_for('login'))
 
 		session['username']=user.username
-		session['user_type']='Consumer'
+		session['user_type']=form.user_type.data
 		login_user(user)
 		flash('User successfully logged in')
+		print("User successfully logged in", file=sys.stderr)
 		next_page=request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
 			next_page = url_for('home')
@@ -43,6 +56,20 @@ def logout():
 	session.pop('username',None)
 	session.pop('user_type',None)
 	return redirect(url_for('login'))
+
+@app.route('/view_profile')
+def view_profile():
+	if not current_user.is_authenticated:
+		return redirect(url_for('home'))
+	user_type = session['user_type']
+	username  = session['username']
+	if user_type == "Consumer":
+		user = Consumer.query.filter_by(username=username).first()
+	elif user_type == "Manager":
+		user = Manager.query.filter_by(username=username).first()
+	elif user_type == "Delivery_agent":
+		user = Delivery_agent.query.filter_by(username=username).first() 
+	return render_template('view_profile.html', user = user, user_type = user_type)
 
 @app.route('/register_consumer', methods=['GET', 'POST'])
 def register_consumer():

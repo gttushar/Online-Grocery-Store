@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %} 
+    <h1> {{ user_type }} Profile - {{ user.username }} </h1>
+    <p>
+        Username : <span style="color:green;">user.username</span><br>
+    </p>
+    <p>
+        Email : <span style="color:green;">user.email</span><br>
+    </p>
+    {% if user.city_id %}
+    <p>
+        City : <span style="color:green;">user.city_id</span><br>
+    </p>
+    {% endif %}
+    {% if user.address %}
+    <p>
+        City : <span style="color:green;">user.address</span><br>
+    </p>
+    {% endif %}
+    {% if user.phone_no %}
+    <p>
+        City : <span style="color:green;">user.phone_no</span><br>
+    </p>
+    {% endif %}
+    {% if user.brand %}
+    <p>
+        City : <span style="color:green;">user.brand</span><br>
+    </p>
+    {% endif %}
+    <p>
+        <a href = {{ url_for("home") }}>Home</a>
+    </p>
+
+{% endblock content %}

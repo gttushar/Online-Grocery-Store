@@ -6,6 +6,7 @@ from app.models import Consumer
 class LoginForm(FlaskForm):
 	username=StringField('Username',validators=[DataRequired()])
 	password=PasswordField('Password',validators=[DataRequired()])
+	user_type=StringField('Sign in as',validators=[DataRequired()])
 	submit=SubmitField('Sign In')
 
 class RegistrationForm(FlaskForm):
