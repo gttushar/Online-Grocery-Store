@@ -1,6 +1,5 @@
 from app import db
 from app import login
-from app.routes import session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
@@ -10,8 +9,9 @@ class Consumer(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True , nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    address = db.Column(db.String(50),nullable=False)
+    address = db.Column(db.String(128),nullable=False)
     city_id = db.Column(db.String(5),db.ForeignKey('city.city_id'),nullable = False)
+    phone_no = db.Column(db.String(10), unique=True , nullable=False)
 
     def __repr__(self):
         return f"Consumer('{self.username}')"
@@ -76,7 +76,7 @@ class Item(db.Model):
     brand = db.Column(db.String(30),db.ForeignKey('manager.brand'),nullable = False)
     avg_rating = db.Column(db.Float(precision=2),nullable=False)
     price = db.Column(db.Float(precision=5),nullable=False)
-    #quantity = db.Column(db.Integer,nullable=False)
+    quantity = db.Column(db.Integer,nullable=False)
 
 class Order(db.Model):
     order_id = db.Column(db.Integer,primary_key=True)
@@ -99,16 +99,10 @@ class Contains(db.Model):
 class Itemcity(db.Model):
     city_id=db.Column(db.String(5),db.ForeignKey('city.city_id'), primary_key=True)
     item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
-    #quantity= db.Column(db.Integer,nullable=False)
+    quantity= db.Column(db.Integer,nullable=False)
 
 class Review(db.Model):
     cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),primary_key=True)
     item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
     review = db.Column(db.String(100))
     rating = db.Column(db.Integer,nullable=False)
-
-class Cart(db.Model):
-    cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),primary_key=True)
-    item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
-    quantity=db.Column(db.Integer,nullable=False)
-    db.CheckConstraint('quantity>0','check1')
