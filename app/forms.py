@@ -1,29 +1,29 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired,EqualTo,Length,Email,ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
+from wtforms.validators import DataRequired,EqualTo,Length,Email,ValidationError, NumberRange
 from app.models import Consumer
 
 class LoginForm(FlaskForm):
-	username=StringField('Username',validators=[DataRequired()])
-	password=PasswordField('Password',validators=[DataRequired()])
-	submit=SubmitField('Sign In')
+    username=StringField('Username',validators=[DataRequired()])
+    password=PasswordField('Password',validators=[DataRequired()])
+    submit=SubmitField('Sign In')
 
 class RegistrationForm(FlaskForm):
-	username = StringField('Username', validators=[ DataRequired(), Length(max=64)])
-	email = StringField('Email', validators=[ DataRequired(), Email(), Length(max=120)])
-	password = PasswordField('Password', validators=[ DataRequired(),Length(min=6, max=128) ])
-	confirm_password = PasswordField('Confirm password', validators=[ DataRequired(),EqualTo('password') ])
+    username=StringField('Username', validators=[ DataRequired() ])
+    email=StringField('Email', validators=[ DataRequired(), Email() ])
+    password=PasswordField('Password', validators=[ DataRequired(),Length(min=6) ])
+    confirm_password=PasswordField('Confirm password', validators=[ DataRequired(),EqualTo('password') ])
+    submit=SubmitField('Sign Up', validators=[ DataRequired() ])
 
-	def validate_username(self,username):
-		user=Consumer.query.filter_by(username=username.data).first()
-		if user is not None:
-			raise ValidationError('Username already exists')
-	
-	def validate_email(self,email):
-		user=Consumer.query.filter_by(email=email.data).first()
-		if user is not None:
-			raise ValidationError('Email id is already registered')
-
+    def validate_username(self,username):
+        user=Consumer.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Username already exists')
+    
+    def validate_email(self,email):
+        user=Consumer.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Email id is already registered')
 
 class Consumer_Registration_Form(RegistrationForm,FlaskForm):
 	# basic_details = RegistrationForm()
@@ -48,5 +48,10 @@ class Agent_Registration_Form(RegistrationForm,FlaskForm):
 	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
 class SearchForm(FlaskForm):
-	search_text=TextAreaField(None,validators=[DataRequired()])
-	submit=SubmitField('Search')
+    search_text=TextAreaField(None,validators=[DataRequired()])
+    submit=SubmitField('Search')
+
+class CheckoutForm(FlaskForm):
+    cardno=StringField('Card no.',validators=[DataRequired()])
+    cvv=IntegerField('CVV', validators=[DataRequired(),NumberRange(min=0,max=1000)])
+    submit=SubmitField('Confirm Order')
