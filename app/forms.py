@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, RadioField
 from wtforms.validators import DataRequired,EqualTo,Length,Email,ValidationError, NumberRange
-from app.models import Consumer
+from app.models import Consumer, Manager, Delivery_agent
 
 class LoginForm(FlaskForm):
 	username=StringField('Username',validators=[DataRequired()])
@@ -23,15 +23,14 @@ class RegistrationForm(FlaskForm):
 
 class Consumer_Registration_Form(RegistrationForm,FlaskForm):
 	# basic_details = RegistrationForm()
-	city_id = StringField('City', validators=[ DataRequired(), Length(max=64)])
-	address = StringField('Address', validators=[ DataRequired(), Length(max=128)])
-	phone_no = StringField('Phone number', validators=[ DataRequired(), Length(min=10, max=10)])
-	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
-
-	def validate_username(self,username):
-		user=Consumer.query.filter_by(username=username.data).first()
-		if user is not None:
-			raise ValidationError('Consumer username already exists')
+    city_id = StringField('City', validators=[ DataRequired(), Length(max=64)])
+    address = StringField('Address', validators=[ DataRequired(), Length(max=128)])
+    phone_no = StringField('Phone number', validators=[ DataRequired(), Length(min=10, max=10)])
+    submit = SubmitField('Sign Up', validators=[ DataRequired() ])
+    def validate_username(self,username):
+        user=Consumer.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Consumer username already exists')
 
 	def validate_phone_no(self, phone_no):
 		if not phone_no.data.isnumeric():
@@ -39,8 +38,8 @@ class Consumer_Registration_Form(RegistrationForm,FlaskForm):
 
 class Manager_Registration_Form(RegistrationForm,FlaskForm):
 	# basic_details = RegistrationForm()
-	brand = StringField('City', validators=[ DataRequired(), Length(max=30)])
-	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
+    brand = StringField('City', validators=[ DataRequired(), Length(max=30)])
+    submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
 	def validate_username(self,username):
 		user=Manager.query.filter_by(username=username.data).first()
@@ -48,9 +47,9 @@ class Manager_Registration_Form(RegistrationForm,FlaskForm):
 			raise ValidationError('Manager username already exists')
 
 class Agent_Registration_Form(RegistrationForm,FlaskForm):
-	# basic_details = RegistrationForm()
-	city_id = StringField('City', validators=[ DataRequired(), Length(max=64)])
-	submit = SubmitField('Sign Up', validators=[ DataRequired() ])
+    # basic_details = RegistrationForm()
+    city_id = StringField('City', validators=[ DataRequired(), Length(max=64)])
+    submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
 	def validate_username(self,username):
 		user=Delivery_agent.query.filter_by(username=username.data).first()
@@ -58,8 +57,14 @@ class Agent_Registration_Form(RegistrationForm,FlaskForm):
 			raise ValidationError('Delivery Agent username already exists')
 
 class SearchForm(FlaskForm):
+<<<<<<< HEAD
 	search_text=TextAreaField(None,validators=[DataRequired()])
 	submit=SubmitField('Search')
+=======
+    category=RadioField('Search by',default='Product',choices=[('choice1','Brand'),('choice2','Product'),('choice3','Category')])
+    search_text=TextAreaField(None,validators=[DataRequired()])
+    submit=SubmitField('Search')
+>>>>>>> 4bcb3ce0b34538a31d6d96c6ab7473fc5968f157
 
 class CheckoutForm(FlaskForm):
 	cardno=StringField('Card no.',validators=[DataRequired()])
