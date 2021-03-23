@@ -27,9 +27,9 @@ class Consumer_Registration_Form(RegistrationForm,FlaskForm):
         if user is not None:
             raise ValidationError('Consumer username already exists')
 
-	def validate_phone_no(self, phone_no):
-		if not phone_no.data.isnumeric():
-			raise ValidationError('Invalid Phone Number')
+    def validate_phone_no(self, phone_no):
+        if not phone_no.data.isnumeric():
+            raise ValidationError('Invalid Phone Number')
 
     def validate_email(self,email):
         user=Consumer.query.filter_by(email=email.data).first()
@@ -37,7 +37,7 @@ class Consumer_Registration_Form(RegistrationForm,FlaskForm):
             raise ValidationError('Email id is already registered')
 
 class Manager_Registration_Form(RegistrationForm,FlaskForm):
-	# basic_details = RegistrationForm()
+    # basic_details = RegistrationForm()
     brand = StringField('City', validators=[ DataRequired(), Length(max=30)])
     submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
