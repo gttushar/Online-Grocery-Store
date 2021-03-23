@@ -156,16 +156,20 @@ def place_order(cart_list):
 @app.route('/checkout', methods=['GET','POST'])
 @login_required
 def checkout():
-    if(session['user_type']!='Consumer'):
-        abort(403)
-    form=CheckoutForm()
-    cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
-        .add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
-    if form.validate_on_submit():
-        place_order(cart_list)
-        flash('Your order has been placed successfully')
-        return redirect(url_for('home'))
-    return render_template('checkout.html',title='Checkout',cart=cart_list)
+	if(session['user_type']!='Consumer'):
+		abort(403)
+
+	amount=0
+	form=CheckoutForm()
+	cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
+		.add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
+	for x in cart_list:
+		amount+=x.quantity*x.price
+	if form.validate_on_submit():
+		place_order(cart_list)
+		flash('Your order has been placed successfully')
+		return redirect(url_for('home'))
+	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
 
 @app.route('/orders')
 def orders():
