@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Hi, {{ current_user.username }} !</h1> 
+	{% for item in item_list.items %}
+		<p>
+	        Item Name : <span style="color:green;">{{ item.name }}</span><br>
+	    </p>
+	    <p>
+	        Category : <span style="color:green;">{{ item.category }}</span><br>
+	    </p>
+	    <p>
+	        Brand : <span style="color:green;">{{ item.brand }}</span><br>
+	    </p>
+	    <p>
+	        Price : <span style="color:green;"> {{ item.price }}</span><br>
+	    </p>
+	    <p>
+	        Available : <span style="color:green;">{{ item.quantity }}</span><br>
+	    </p>
+	{% endfor %}
+	{% for page_num in item_list.iter_pages()%}
+		{% if page_num %}
+			<a href = "{{url_for('consumer_home',page=page_num)}}"> {{ page_num }} </a>
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+{% endblock %}
