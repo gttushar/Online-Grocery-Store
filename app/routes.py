@@ -40,7 +40,7 @@ def login():
 		session['user_type']=form.user_type.data
 		login_user(user)
 		flash('User successfully logged in')
-		print("User successfully logged in", file=sys.stderr)
+		print(form.user_type.data + " successfully logged in", file=sys.stderr)
 		next_page=request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
 			next_page = url_for('home')
@@ -55,9 +55,10 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/view_profile')
+@login_required
 def view_profile():
 	if not current_user.is_authenticated:
-		return redirect(url_for('home'))
+		return redirect(url_for('login'))
 	user_type = session['user_type']
 	username  = session['username']
 	if user_type == "Consumer":
@@ -165,3 +166,31 @@ def checkout():
         flash('Your order has been placed successfully')
         return redirect(url_for('home'))
     return render_template('checkout.html',title='Checkout',cart=cart_list)
+
+@app.route('/orders')
+def orders():
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
+	if(session['user_type']!='Consumer'):
+		abort(403)
+	username  = session['username']
+	cid = Consumer.query.filter_by(username=username).first().cid
+	print(Order.query.filter_by(cid=cid).all(), file=sys.stderr)
+	orders = []
+	for order_object in Order.query.filter_by(cid=cid).all():
+		order = {}
+		order['order_id'] = order_object.order_id
+		order['amount'] = order_object.amount
+		order['status'] = order_object.status
+		order['time_of_order'] = order_object.time_of_order
+		order['time_of_delivery'] = order_object.time_of_delivery
+		order['agent_name'] = Delivery_agent.query.filter_by(agent_id=order_object.agent_id).first().username
+		contains = Contains.query.filter_by(order_id = order['order_id']).all()
+		# Items in order
+		order['contains'] = []
+		for item in contains:
+			item_name = Item.query.filter_by(item_id=item.item_id).first().name
+			order['contains'].append({'item_id':item.item_id, 'item_name':item_name, 'quantity':item.quantity})
+
+		orders.append(order)
+	return render_template('orders.html', orders = orders)
