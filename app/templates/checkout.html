@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Checkout</h2>
+    {% for x in cart %} 
+            <p>
+            {{ x.item_id }}<br>
+            {{ x.item_name }}<br>
+            {{ x.quantity }}<br>
+            {{ x.brand }}<br>
+            </p>
+            <p>
+                <h3>Total amount= {{amount}}</h3>
+            </p>
+    {% endfor %} 
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.cardno.label }}<br>
+            {{ form.username(size=32) }}
+            {% for error in form.username.errors %} 
+            <span style="color:red;">[{{error}}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.cvv.label }}<br>
+            {{ form.username(size=32) }}
+            {% for error in form.username.errors %} 
+            <span style="color:red;">[{{error}}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+{% endblock content %}
