@@ -12,10 +12,10 @@ from flask_login import current_user,login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from datetime import datetime
 
-@app.route('/home')
+@app.route('/home',methods=['GET','POST'])
 @login_required
 def home():
-	print(session['user_type'], " Home : ", session['username'], file=sys.stderr)
+	form=SearchForm()
 	return render_template('home.html',title='home')
 
 @app.route('/login',methods=['GET','POST'])
