@@ -78,6 +78,7 @@ class Item(db.Model):
     avg_rating = db.Column(db.Float(precision=2),nullable=False)
     price = db.Column(db.Float(precision=5),nullable=False)
     quantity = db.Column(db.Integer,nullable=False)
+    totalsold = db.Column(db.Integer,nullable=False)
 
 class Order(db.Model):
     order_id = db.Column(db.Integer,primary_key=True)
