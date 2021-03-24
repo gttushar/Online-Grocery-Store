@@ -12,11 +12,31 @@ from flask_login import current_user,login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from datetime import datetime
 
-@app.route('/home',methods=['GET','POST'])
+@app.route('/consumer_home',methods = ['GET','POST'])
 @login_required
-def home():
-	form=SearchForm()
-	return render_template('home.html',title='home')
+def consumer_home():
+	#print(session['user_type'], " Home : ", session['username'], file=sys.stderr)
+	page=request.args.get('page',1,type=int)
+	item_list = None
+	form = SearchForm()
+	if request.method == 'POST':
+		if form.category.data == "Brand":
+			item_list = Item.query.filter_by(brand = form.search_text.data)\
+				.order_by(Item.totalsold.desc())\
+				.paginate(page=page,per_page=20)
+			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
+		if form.category.data == "Product":
+			item_list = Item.query.filter_by(name = form.search_text.data)\
+				.order_by(Item.totalsold.desc())\
+				.paginate(page=page,per_page=20)
+			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
+		if form.category.data == "Category":
+			item_list = Item.query.filter_by(category = form.search_text.data)\
+				.order_by(Item.totalsold.desc())\
+				.paginate(page=page,per_page=20)
+			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
+	item_list = Item.query.order_by(Item.totalsold.desc()).paginate(page=page,per_page=20)
+	return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
