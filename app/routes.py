@@ -41,7 +41,7 @@ def consumer_home():
 @app.route('/login',methods=['GET','POST'])
 def login():
 	if current_user.is_authenticated:
-		return redirect(url_for('home'))
+		return redirect(url_for('consumer_home'))
 	form=LoginForm()
 	if form.validate_on_submit():
 		user=None
@@ -63,7 +63,7 @@ def login():
 		print(form.user_type.data + " successfully logged in", file=sys.stderr)
 		next_page=request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
-			next_page = url_for('home')
+			next_page = url_for('consumer_home')
 		return redirect(next_page)
 	return render_template('login.html',title='Sign In',form=form)
 
@@ -92,7 +92,7 @@ def view_profile():
 @app.route('/register_consumer', methods=['GET', 'POST'])
 def register_consumer():
 	if current_user.is_authenticated:
-		return redirect(url_for('home'))
+		return redirect(url_for('consumer_home'))
 	form=Consumer_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, address, city_id, phone_no
