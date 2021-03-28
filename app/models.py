@@ -101,7 +101,7 @@ class Contains(db.Model):
 class Itemcity(db.Model):
     city_id=db.Column(db.String(5),db.ForeignKey('city.city_id'), primary_key=True)
     item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
-    #quantity= db.Column(db.Integer,nullable=False)
+    quantity= db.Column(db.Integer,nullable=False)
 
 class Review(db.Model):
     cid = db.Column(db.Integer,db.ForeignKey('consumer.cid'),primary_key=True)
