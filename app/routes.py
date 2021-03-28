@@ -23,25 +23,82 @@ def consumer_home():
 		if form.category.data == "Brand":
 			item_list = Item.query.filter_by(brand = form.search_text.data)\
 				.order_by(Item.totalsold.desc())\
-				.paginate(page=page,per_page=20)
+				.paginate(page=page,per_page=200)
 			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 		if form.category.data == "Product":
 			item_list = Item.query.filter_by(name = form.search_text.data)\
 				.order_by(Item.totalsold.desc())\
-				.paginate(page=page,per_page=20)
+				.paginate(page=page,per_page=200)
 			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 		if form.category.data == "Category":
 			item_list = Item.query.filter_by(category = form.search_text.data)\
 				.order_by(Item.totalsold.desc())\
-				.paginate(page=page,per_page=20)
+				.paginate(page=page,per_page=200)
 			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 	item_list = Item.query.order_by(Item.totalsold.desc()).paginate(page=page,per_page=20)
 	return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 
+@app.route('/manager_home',methods = ['GET','POST'])
+@login_required
+def manager_home():
+	curr_manager= Manager.query.filter_by(manager_id = session['manager_id']).first()
+	brand = curr_manager.brand
+	page = request.args.get('page',1,type = int)
+	item_list = Item.query,filter_by(brand = brand).paginate(page = page,per_page = 20)
+	return render_template('manager_home.html',title = 'home',item_list = item_list,brand =brand)
+
+@app.route('/manager_add_item',methods = ['GET','POST'])
+@login_required
+def manager_add_item():
+	if current_user.is_authenticated:
+		if session['user_type'] == "Consumer":
+			return redirect(url_for('consumer_home'))
+		elif session['user_type'] == "Manager":
+			return redirect(url_for('manager_home'))
+		else:
+			return redirect(url_for())
+	form=ItemaddForm()
+	if form.validate_on_submit():
+		curr_manager= Manager.query.filter_by(manager_id = session['manager_id']).first()
+		brand = curr_manager.brand
+		item = Item(name=form.name.data, category=form.category.data, 
+						description=form.description.data, price=form.price.data,brand = brand,totalsold=0,quantity=0)
+		count=db.session.query(func.count('*')).select_from(Item).scalar()
+		item.item_id=count+1
+		db.session.add(item)
+		for city in city.session.query().all():
+			itemcity = Itemcity(item_id=item.item_id,city_id=city.city_id,quantity=0)
+			db.session.add(itemcity)
+		db.session.commit()
+		return redirect(url_for('manager_home'))
+	return render_template('manager_add_item.html', title='Add Item', form=form)
+
+@app.route('manager/<int:item_id>')
+@login_required
+def manager_item(item_id):
+	if current_user.is_authenticated:
+		if session['user_type'] == "Consumer":
+			return redirect(url_for('consumer_home'))
+		elif session['user_type'] == "Manager":
+			return redirect(url_for('manager_home'))
+		else:
+			return redirect(url_for())
+	item = Item.query.filter_by(item_id = item_id).first_or_404();
+	itemcity = Itemcity.query.join(City,City.city_id=Itemcity.city_id)\
+					add_columns(Itemcity.city_id,Itemcity.quantity,City.city_name)\
+					.order_by(Itemcity.quantity.desc())\
+					.filter_by(item_id = item_id)
+	return render_template('manager_view_item.html',title ='View Item',item=item,itemcity = itemcity)
+
 @app.route('/login',methods=['GET','POST'])
 def login():
 	if current_user.is_authenticated:
-		return redirect(url_for('consumer_home'))
+		if session['user_type'] == "Consumer":
+			return redirect(url_for('consumer_home'))
+		elif session['user_type'] == "Manager":
+			return redirect(url_for('manager_home'))
+		else:
+			return redirect(url_for())
 	form=LoginForm()
 	if form.validate_on_submit():
 		user=None
@@ -92,7 +149,12 @@ def view_profile():
 @app.route('/register_consumer', methods=['GET', 'POST'])
 def register_consumer():
 	if current_user.is_authenticated:
-		return redirect(url_for('consumer_home'))
+		if session['user_type'] == "Consumer":
+			return redirect(url_for('consumer_home'))
+		elif session['user_type'] == "Manager":
+			return redirect(url_for('manager_home'))
+		else:
+			return redirect(url_for())
 	form=Consumer_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, address, city_id, phone_no
@@ -110,7 +172,12 @@ def register_consumer():
 @app.route('/register_manager', methods=['GET', 'POST'])
 def register_manager():
 	if current_user.is_authenticated:
-		return redirect(url_for('home'))
+		if session['user_type'] == "Consumer":
+			return redirect(url_for('consumer_home'))
+		elif session['user_type'] == "Manager":
+			return redirect(url_for('manager_home'))
+		else:
+			return redirect(url_for())
 	form=Manager_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, brand
@@ -127,7 +194,12 @@ def register_manager():
 @app.route('/register_agent', methods=['GET', 'POST'])
 def register_agent():
 	if current_user.is_authenticated:
-		return redirect(url_for('home'))
+		if session['user_type'] == "Consumer":
+			return redirect(url_for('consumer_home'))
+		elif session['user_type'] == "Manager":
+			return redirect(url_for('manager_home'))
+		else:
+			return redirect(url_for())
 	form=Agent_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, city_id
