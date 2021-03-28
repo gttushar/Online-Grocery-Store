@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, RadioField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, RadioField,DecimalField
 from wtforms.validators import DataRequired,EqualTo,Length,Email,ValidationError, NumberRange
 from app.models import Consumer, Manager, Delivery_agent
 
@@ -75,3 +75,9 @@ class CheckoutForm(FlaskForm):
     cardno=StringField('Card no.',validators=[DataRequired()])
     cvv=IntegerField('CVV', validators=[DataRequired(),NumberRange(min=0,max=1000)])
     submit=SubmitField('Confirm Order')
+
+class ItemaddForm(FlaskForm):
+    name = StringField('Name',validators=[DataRequired(),Length(max=50)])
+    category = StringField('Category',validators=[DataRequired()])
+    description = StringField('Description',validators=[DataRequired(),Length(max = 100)])
+    price = DecimalField('Price',validators=[DataRequired()],places=2)
