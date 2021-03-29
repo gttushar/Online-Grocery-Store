@@ -25,7 +25,7 @@
 	{% for item in item_list.items %}
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title">Item Name : <span style="color:green;">{{ item.name }}</span></h4>
+				<h4 class="card-title">Item Name : <span style="color:green;"><a href = "{{url_for('view_item',item_id = item.item_id)}}">{{ item.name }}</a></span></h4>
 				<p>
 					Category : <span style="color:green;">{{ item.category }}</span>
 				</p>

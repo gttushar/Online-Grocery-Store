@@ -19,7 +19,7 @@
 		<style>
 			.login_form{
 				width: 50%; 
-				max-width: 400px;
+				max-width: 500px;
 				margin: auto;
 				padding: 20px;
 				margin-top: 50px;
@@ -28,7 +28,6 @@
 			}
 			.form-group{
 				padding-top: 3px;
-
 			}
 		</style>
 	</head>
@@ -40,8 +39,20 @@
 					{% if current_user.is_authenticated %}
 					<div class="collapse navbar-collapse" id="navbarToggle">
 						<div class="navbar-nav mr-auto">
-							<a class="nav-item nav-link" href="{{ url_for('consumer_home') }}">Home</a>
-							<a class="nav-item nav-link" href="{{ url_for('view_cart') }}">View Cart</a>
+							{% if session['user_type']=='Consumer'%}
+								<a class="nav-item nav-link" href="{{ url_for('consumer_home') }}">Home</a>
+								<a class="nav-item nav-link" href="{{ url_for('view_cart') }}">View Cart</a>
+								<a class="nav-item nav-link" href="{{ url_for('consumer_orders') }}">My orders</a>
+							{% endif %}
+							
+							{% if session['user_type']=='Manager'%}
+								<a class="nav-item nav-link" href="{{ url_for('manager_home') }}">Home</a>
+								<a class="nav-item nav-link" href="{{ url_for('manager_add_item') }}">Add item</a>
+							{% endif %}
+
+							{% if session['user_type']=='Delivery_agent'%}
+								<a class="nav-item nav-link" href="{{ url_for('agent_home') }}">Home</a>
+							{% endif %}
 							<a class="nav-item nav-link" href="{{ url_for('view_profile') }}">View Profile</a>
 							<a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
 						</div>	

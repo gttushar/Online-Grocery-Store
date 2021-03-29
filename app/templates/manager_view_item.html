@@ -1,23 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<h2>{{item.item_id}}		{{item.name}}</h2><br>
-	<h3>{{item.category}}</h3><br>
-	<h3>{{item.brand}}</h3><br>
-	<h3>RS. {{item.price}}</h3><br>
-	<h3>{{item.quantity}}</h3><br>
-	<h3>{{item.totalsold}}</h3><br>
-	<h5><p>{{item.description}}</p></h5><BR><BR><BR>
+	<h2>{{item.item_id}}.		{{item.name}}</h2><br>
+	<h3>CATEGORY : {{item.category}}</h3><br>
+	<h3>BRAND : {{item.brand}}</h3><br>
+	<h3>PRICE : RS. {{item.price}}</h3><br>
+	<h3>TOTAL AVAILABLE : {{item.quantity}}</h3><br>
+	<h3>TOTAL SOLD : {{item.totalsold}}</h3><br>
+	<h5><p>DESCRIPTION : {{item.description}}</p></h5><BR><BR><BR>
 	<h4> ITEM QUANTITY IN CORRESPONDING CITIES </h4>
-	<table>
+	<table class="table table-dark table-hover table-responsive">
 		<tr>
 			<th> City - City ID </th>
 			<th> Quantity </th>
 		</tr>
 		{% for city in itemcity %}
 		<tr>
-			<th>{{city.city_name}} - {{ city.city_id }}</a>></th>
-			<th>{{ city.quantity }}</a></th>
+			<th>{{city.city_name}} - {{ city.city_id }}</th>
+			<th>{{ city.quantity }}</th>
+			<th><a href = "{{url_for('quantity_change',item_id = item.item_id,city_id = city.city_id)}}" class = "btn btn-info" >Add Quantity</a></th>
 		</tr>
 		{% endfor %}
 	</table>

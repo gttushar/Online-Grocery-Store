@@ -48,16 +48,21 @@
                 </div>
                 
                 {% if form.city_id %}
-                    {{ form.city_id.label(class="form-control-label") }}<br>
-                            <SELECT name = "city_id">
-                                {% for city in city_list %}
-                                <OPTION value = "{{ city.city_id }}"> {{ city.city_name }} </OPTION>
-                                {% endfor %}
-                            </SELECT>
-                            {% for error in form.city_id.errors %} 
-                            <span style="color:red;">[{{error}}]</span>
+                    <div class="input-group mb-4 input-group-md">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">City</span>
+                        </div>
+                        <SELECT name = "city_id" class="custom-select">
+                            {% for city in city_list %}
+                            <OPTION value = "{{ city.city_id }}"> {{ city.city_name }} </OPTION>
                             {% endfor %}
+                        </SELECT>
+                        {% for error in form.city_id.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                    </div>
                 {% endif %}
+                
                 
                 {% if form.address %}
                 <div class="input-group mb-4 input-group-md">
@@ -101,20 +106,10 @@
                 {% endif %}
                 
             </fieldset>
-        <div class="text-center">
             <div class="form-group">
                 <p>{{ form.submit(class="btn btn-outline-info") }}</p>
             </div>
-        </div>
         </form>
-    </div>
-    <div class="text-center">
-            <div class="border-top pt-3">
-                <small class="text-white">
-                    Already have an account ?<br>
-                    <a href = "{{ url_for('login') }}"> Login </a>     <br>
-                </small>
-            </div>
     </div>
 </div>
 {% endblock content %}
