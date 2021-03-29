@@ -81,3 +81,6 @@ class ItemaddForm(FlaskForm):
     category = StringField('Category',validators=[DataRequired()])
     description = StringField('Description',validators=[DataRequired(),Length(max = 100)])
     price = DecimalField('Price',validators=[DataRequired()],places=2)
+
+class Changequantityform(FlaskForm):
+    quantity = IntegerField('Quantity',validators=[DataRequired(),NumberRange(min=0)])
