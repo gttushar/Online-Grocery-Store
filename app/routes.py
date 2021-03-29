@@ -246,7 +246,7 @@ def view_cart():
         abort(403)
     cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
         .add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)\
-            .filter(Cart.cid==session['user'])
+            .filter(Cart.cid==session['userid'])
     return render_template('view_cart.html',title='Cart',cart=cart_list)
 
 def place_order(cart_list):
