@@ -12,11 +12,11 @@
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
             <p> Order #{{ i['i'] }} : </p>
                 Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
+                Consumer : <span style="color:blue;">{{ order.consumer_name }}</span><br>
                 Amount : <span style="color:blue;">{{ order.amount }}</span><br>
                 Order status : <span style="color:green;">DELIVERED</span><br>
                 Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
                 Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
-                Delivered by : <span style="color:blue;">{{ order.agent_name }}</span><br>
                 Items : <br>
                 {% for item in order.contains %}
                 <p style="margin-left:40px">
