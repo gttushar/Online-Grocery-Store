@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %} 
+    <h1> Orders by Agent - {{ session['username'] }} </h1>
+
+    <p> <a href = {{ url_for('completed_deliveries', agent_id = session['userid']) }} > Orders Delivered </a> </p>
+  
+    <p> PENDING ORDERS </p>
+    {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
+    {% for order in pending_orders %}
+        {% if order['status'] == 'DELIVERING' %}
+            {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
+            <p> Order #{{ i['i'] }} : </p>
+                Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
+                Amount : <span style="color:blue;">{{ order.amount }}</span><br>
+                Order status : <span style="color:green;">PENDING</span><br>
+                Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
+                Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
+                Delivered by : <span style="color:blue;">{{ order.agent_name }}</span><br>
+                Items : <br>
+                {% for item in order.contains %}
+                <p style="margin-left:40px">
+                    Item id : <span style="color:#FF8C00;">{{ item.item_id }}</span>
+                    , Name : <span style="color:#FF8C00;">{{ item.item_name }}</span>
+                    , Quantity : <span style="color:#FF8C00;">{{ item.quantity }}</span>
+                    , Price : <span style="color:#FF8C00;">{{ item.price }}</span><br>
+                </p>
+                {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}
+
+{% endblock content %}/

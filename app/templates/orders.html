@@ -30,7 +30,7 @@
     <p> IN PROGRESS </p>
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
     {% for order in orders %}
-        {% if order.status == 'ORDERED' %}
+        {% if order['status'] == 'ORDERED' %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
             <p> Order #{{ i['i'] }} : </p>
                 Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
@@ -39,7 +39,7 @@
                 Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
                 Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
                 Delivered by : <span style="color:blue;">{{ order.agent_name }}</span><br>
-                Items : <span style="color:blue;">{{ order.brand }}</span><br>
+                Items : <br>
                 {% for item in order.contains %}
                 <p style="margin-left:40px">
                     Item id : <span style="color:#FF8C00;">{{ item.item_id }}</span>
@@ -54,7 +54,7 @@
     <p> DELIVERED </p>
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
     {% for order in orders %}
-        {% if order.status == 'COMPLETE' %}
+        {% if order['status'] == 'COMPLETE' %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
             <p> Order #{{ i['i'] }} : </p>
                 Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
@@ -63,7 +63,7 @@
                 Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
                 Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
                 Delivered by : <span style="color:blue;">{{ order.agent_name }}</span><br>
-                Items : <span style="color:blue;">{{ order.brand }}</span><br>
+                Items : <br>
                 {% for item in order.contains %}
                 <p style="margin-left:40px">
                     Item id : <span style="color:#FF8C00;">{{ item.item_id }}</span>
