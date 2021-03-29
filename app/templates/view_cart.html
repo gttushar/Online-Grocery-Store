@@ -2,8 +2,6 @@
 
 {% block content %} 
     {% if cart %} 
-        <h1>Your cart is empty</h1>
-    {% else %} 
         {% for x in cart %} 
             <div class="card">
                 <div class="card-body">
@@ -16,5 +14,7 @@
             </div>
         {% endfor %} 
         <a href="/checkout" class="btn btn-primary"> Proceed to Checkout</a>
+    {% else %} 
+        <h1>Your cart is empty</h1>
     {% endif %} 
 {% endblock content %}

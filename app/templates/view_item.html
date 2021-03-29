@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{ item.item_name }}</h1>
-    <h2>{{ item.brand }}</h2>
-    <h4>{{ item.description }}</h4>
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">
+            <h3>{{ item.item_name }}</a>
+        </div>
+        <p class="font-weight-bold">{{ item.brand }}</p>
+        <p class="text-break">Description: {{ item.description }}</p>
+    </div>
+</div>
     {% if count>0 %} 
-        <a href="{{ url_for('cart_add') }}"> Add to Cart</a>
+        <a href="{{ url_for('cart_add') class='btn btn-info'}}"> Add to Cart</a>
     {% else %} 
-        <a href="{{ url_for('cart_remove',item_id=item.item_id,count=count) }}"> - </a>
+        <a href="{{ url_for('cart_remove',item_id=item.item_id,count=count) class='btn btn-danger'}}"> - </a>
         <h3>{{ count }}</h3>
-        <a href="{{ url_for('cart_add',item_id=item.item_id,count=count) }}"> + </a>
+        <a href="{{ url_for('cart_add',item_id=item.item_id,count=count) class='btn btn-primary'}}"> + </a>
     {% endif %} 
 {% endblock content %}
         
