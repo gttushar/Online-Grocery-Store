@@ -279,7 +279,8 @@ def checkout():
 	amount=0
 	form=CheckoutForm()
 	cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
-		.add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
+		.filter(Cart.cid==session['userid'])\
+			.add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
 	for x in cart_list:
 		amount+=x.quantity*x.price
 	if form.validate_on_submit():
@@ -312,7 +313,7 @@ def orders():
 		contains = Contains.query.filter_by(order_id = order['order_id']).all()
 		# Items in order
 		order['contains'] = []
-		for item in contains:
+		for item in contains: 
 			item_name = Item.query.filter_by(item_id=item.item_id).first().name
 			order['contains'].append({'item_id':item.item_id, 'item_name':item_name, 'quantity':item.quantity})
 
@@ -427,3 +428,13 @@ def mark_order_delivered(order_id):
 		db.session.commit()
 		flash('Order id = ' + str(order_id) + ' marked as DELIVERED ', 'success')
 	return redirect(url_for('agent_home'))
+
+@app.route('/view_order/<int:order_id>')
+@login_required
+def view_order(order_id):
+	if(session['user_type']!='Consumer'):
+		abort(403)
+	order_list=Contains.query.join(Item,Item.item_id==Contains.item_id)\
+		.filter(Contains.order_id==order_id)\
+			.add_columns(Item.name,Item.brand,Item.price)
+	return render_template('consumer_view_order.html',order_list=order_list)
