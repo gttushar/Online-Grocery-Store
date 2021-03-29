@@ -7,9 +7,9 @@
     {% if count>0 %} 
         <a href="{{ url_for('cart_add') }}"> Add to Cart</a>
     {% else %} 
-        <a href="{{ url_for('cart_remove',item_id=item.item_id) }}"> - </a>
+        <a href="{{ url_for('cart_remove',item_id=item.item_id,count=count) }}"> - </a>
         <h3>{{ count }}</h3>
-        <a href="{{ url_for('cart_add',item_id=item.item_id) }}"> + </a>
+        <a href="{{ url_for('cart_add',item_id=item.item_id,count=count) }}"> + </a>
     {% endif %} 
 {% endblock content %}
         
