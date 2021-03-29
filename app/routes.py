@@ -173,6 +173,7 @@ def view_profile():
 
 @app.route('/register_consumer', methods=['GET', 'POST'])
 def register_consumer():
+	city=City.query.all()
 	if current_user.is_authenticated:
 		if session['user_type'] == "Consumer":
 			return redirect(url_for('consumer_home'))
@@ -192,7 +193,7 @@ def register_consumer():
 		db.session.commit()
 		flash('Congratulations, you are now a registered consumer!','success')
 		return redirect(url_for('login'))
-	return render_template('register.html', title='Register', form=form)
+	return render_template('register.html', title='Register', form=form,city_list=city)
 
 @app.route('/register_manager', methods=['GET', 'POST'])
 def register_manager():
@@ -218,6 +219,7 @@ def register_manager():
 
 @app.route('/register_agent', methods=['GET', 'POST'])
 def register_agent():
+	city=City.query.all()
 	if current_user.is_authenticated:
 		if session['user_type'] == "Consumer":
 			return redirect(url_for('consumer_home'))
@@ -237,7 +239,7 @@ def register_agent():
 		db.session.commit()
 		flash('Congratulations, you are now a registered delivery agent!','success')
 		return redirect(url_for('login'))
-	return render_template('register.html', title='Register', form=form)
+	return render_template('register.html', title='Register', form=form,city_list=city)
 
 @app.route('/view_cart')
 @login_required
@@ -247,7 +249,10 @@ def view_cart():
     cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
         .add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)\
             .filter(Cart.cid==session['userid'])
-    return render_template('view_cart.html',title='Cart',cart=cart_list)
+    x=0
+    for cart in cart_list:
+    	x=1
+    return render_template('view_cart.html',title='Cart',cart=cart_list,x=x)
 
 def place_order(cart_list):
     x=Consumer.query.filter_by(Consumer.cid==session['userid'])
@@ -279,8 +284,7 @@ def checkout():
 	amount=0
 	form=CheckoutForm()
 	cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
-		.filter(Cart.cid==session['userid'])\
-			.add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
+		.add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
 	for x in cart_list:
 		amount+=x.quantity*x.price
 	if form.validate_on_submit():
@@ -291,7 +295,6 @@ def checkout():
 		flash('Your order has been placed successfully','success')
 		return redirect(url_for('consumer_home'))
 	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
-
 @app.route('/orders')
 def orders():
 	if not current_user.is_authenticated:
@@ -313,7 +316,7 @@ def orders():
 		contains = Contains.query.filter_by(order_id = order['order_id']).all()
 		# Items in order
 		order['contains'] = []
-		for item in contains: 
+		for item in contains:
 			item_name = Item.query.filter_by(item_id=item.item_id).first().name
 			order['contains'].append({'item_id':item.item_id, 'item_name':item_name, 'quantity':item.quantity})
 
@@ -332,7 +335,7 @@ def view_item(item_id):
 		count=x.quantity
 	return render_template('view_item.html',item=item,count=count)
 
-@app.route("/cart_add/<int:item_id>")
+@app.route("/cart_add/<int:item_id>/<int:count>")
 @login_required
 def cart_add(item_id,count):
 	if(session['user_type']!='Consumer'):
@@ -346,9 +349,9 @@ def cart_add(item_id,count):
 		x=Cart(cid=session['userid'],item_id=item.item_id,quantity=1)
 		db.session.add(x)
 		db.session.commit()
-	return redirect(url_for('view_item'),item_id=item_id)
+	return redirect(url_for('view_item',item_id=item_id))
 
-@app.route("/cart_remove/<int:item_id>")
+@app.route("/cart_remove/<int:item_id>/<int:count>")
 @login_required
 def cart_remove(item_id,count):
 	if(session['user_type']!='Consumer'):
@@ -361,7 +364,7 @@ def cart_remove(item_id,count):
 	else:
 		db.session.delete(cart_item)
 		db.session.commit()
-	return redirect(url_for('view_item'),item_id=item_id)
+	return redirect(url_for('view_item',item_id=item_id))
 
 @app.route('/agent_home',methods = ['GET','POST'])
 @login_required
