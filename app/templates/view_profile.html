@@ -1,35 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %} 
-    <h1> {{ user_type }} Profile - {{ user.username }} </h1>
-    <p>
-        Username : <span style="color:green;">{{ user.username }}</span><br>
-    </p>
-    <p>
-        Email : <span style="color:green;">{{ user.email }}</span><br>
-    </p>
+    <br>
+    <h3> User Profile - {{ user.username }} </h3>
+    <br><br>
+<table class="table table-bordered table-hover table-striped table-responsive "> 
+    <tr> <td>Username :     </td>  <td> <span style="color:green;">{{ user.username }}  </span> </td> </tr>    
+    <tr> <td>Email :        </td>  <td> <span style="color:green;">{{ user.email }}     </span> </td> </tr>
     {% if user.city_id %}
-    <p>
-        City : <span style="color:green;">{{ user.city_id }}</span><br>
-    </p>
+    <tr> <td>City :         </td>  <td> <span style="color:green;">{{ user.city_id }}   </span> </td> </tr>
     {% endif %}
     {% if user.address %}
-    <p>
-        Address : <span style="color:green;">{{ user.address }}</span><br>
-    </p>
+    <tr> <td>Address :      </td>  <td> <span style="color:green;">{{ user.address }}   </span> </td> </tr>
     {% endif %}
     {% if user.phone_no %}
-    <p>
-        Phone Number : <span style="color:green;">{{ user.phone_no }}</span><br>
-    </p>
+    <tr> <td>Phone Number : </td>  <td> <span style="color:green;">{{ user.phone_no }}  </span> </td> </tr>
     {% endif %}
     {% if user.brand %}
-    <p>
-        Brand : <span style="color:green;">{{ user.brand }}</span><br>
-    </p>
+    <tr> <td>Brand :        </td>  <td> <span style="color:green;">{{ user.brand }}     </span> </td> </tr>
     {% endif %}
-    <p>
-        <a href = {{ url_for("home") }}>Home</a>
-    </p>
+</table>
 
 {% endblock content %}

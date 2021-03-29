@@ -10,22 +10,38 @@
     {% for order in completed_orders %}
         {% if order['status'] == 'COMPLETE' %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
-            <p> Order #{{ i['i'] }} : </p>
-                Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
-                Consumer : <span style="color:blue;">{{ order.consumer_name }}</span><br>
-                Amount : <span style="color:blue;">{{ order.amount }}</span><br>
-                Order status : <span style="color:green;">DELIVERED</span><br>
-                Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
-                Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
-                Items : <br>
+            <table class="table table-bordered table-responsive">
+            <tr class = "table-active table-dark"> 
+                <td colspan="2"> <b> ORDER #{{ i['i'] }} </b> </td>    
+                <td colspan="2"><a href={{ url_for('mark_order_delivered',order_id = order.order_id) }} style = "float:right;color:#ADD8E6"> <!-- Light blue lnks --> 
+                    <u>Mark as delivered</u> 
+                </a></td>
+            </tr>
+            <tr>
+                <td> Order_id </td> <td> <span style="color:brown;">{{ order.order_id }}</span></td>
+                <td> Order status   </td> <td> <span style="color:green;">DELIVERED</span></td>
+            </tr>
+            <tr>
+                <td> Consumer </td> <td> <span style="color:brown;">{{ order.consumer_name }}</span></td>
+                <td> Amount </td>   <td> <span style="color:brown;">{{ order.amount }}</span></td>
+            </tr>
+            <tr>
+                <td> Ordered on </td> <td> <span style="color:brown;">{{ order.time_of_order }}</span></td>
+                <td> Delivered on </td> <td> <span style="color:brown;">{{ order.time_of_delivery }}</span></td>
+            </tr>
+            <tr class = "table-active">  <th colspan="4" style="text-align:center"> ITEMS </th> </tr>
+            <tr> 
+                <th>Item id</th><th>Name</th><th>Quantity</th><th>Price</th>
+            </tr>
                 {% for item in order.contains %}
-                <p style="margin-left:40px">
-                    Item id : <span style="color:#FF8C00;">{{ item.item_id }}</span>
-                    , Name : <span style="color:#FF8C00;">{{ item.item_name }}</span>
-                    , Quantity : <span style="color:#FF8C00;">{{ item.quantity }}</span>
-                    , Price : <span style="color:#FF8C00;">{{ item.price }}</span><br>
-                </p>
+                <tr>
+                    <td> <span style="color:#b22222;">{{ item.item_id }}    </span> </td>
+                    <td> <span style="color:#b22222;">{{ item.item_name }}  </span> </td>
+                    <td> <span style="color:#b22222;">{{ item.quantity }}   </span> </td>
+                    <td> <span style="color:#b22222;">{{ item.price }}      </span> </td>
+                </tr>
                 {% endfor %}
+            </table>
         {% endif %}
     {% endfor %}
     {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}
