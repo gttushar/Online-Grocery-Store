@@ -284,6 +284,7 @@ def checkout():
 	amount=0
 	form=CheckoutForm()
 	cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
+		.filter(Cart.cid==session['userid'])\
 		.add_columns(Item.item_id,Item.name,Item.brand,Cart.quantity,Item.price)
 	for x in cart_list:
 		amount+=x.quantity*x.price
