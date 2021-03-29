@@ -11,4 +11,4 @@ flask run
 
 set FLASK_APP=grocery_store.py
 
-python3 run.py
+python run.py
