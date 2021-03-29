@@ -26,9 +26,7 @@ class Consumer(UserMixin, db.Model):
     def get_id(self):
         return self.username
     
-@login.user_loader
-def load_user(username):
-    return Consumer.query.filter_by(username=username).first()
+
 
 class Manager(UserMixin, db.Model):
     manager_id = db.Column(db.Integer,primary_key=True)
@@ -114,3 +112,12 @@ class Cart(db.Model):
     item_id=db.Column(db.Integer,db.ForeignKey('item.item_id'),primary_key=True)
     quantity=db.Column(db.Integer,nullable=False)
     db.CheckConstraint('quantity>0','check1')
+
+@login.user_loader
+def load_user(username):
+    if session['user_type']=='Consumer':
+        return Consumer.query.filter_by(username=username).first()
+    elif session['user_type']=='Manager':
+        return Manager.query.filter_by(username=username).first()
+    else:
+        return Delivery_agent.query.filter_by(username=username).first()
