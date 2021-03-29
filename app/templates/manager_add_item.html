@@ -1,37 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %} 
-    <h1> Add Item </h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=50) }}
-            {% for error in form.name.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.category.label }}<br>
-            {{ form.category(size =32) }}
-            {% for error in form.category.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.description.label }}<br>
-            {{ form.description(size = 100) }}
-            {% for error in form.description.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.price.label }}<br>
-            {{ form.price() }}
-            {% for error in form.price.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="login_form">
+        <div class="text-left">
+            <legend class="border-bottom mb-4">Add Item</legend>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label }}<br>
+                    {{ form.name(size=32) }}
+                    {% for error in form.name.errors %} 
+                    <span style="color:red;">[{{error}}]</span>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.category.label }}<br>
+                            {{ form.category(size=25) }}
+                            {% for error in form.category.errors %} 
+                            <span style="color:red;">[{{error}}]</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.price.label }}<br>
+                            {{ form.price(size=5) }}
+                            {% for error in form.price.errors %} 
+                            <span style="color:red;">[{{error}}]</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.description.label }}<br>
+                    {{ form.description(size = 100, rows=5) }}
+                    {% for error in form.description.errors %} 
+                    <span style="color:red;">[{{error}}]</span>
+                    {% endfor %}
+                </div>
+                
+                <p>{{ form.submit(class="btn btn-outline-info") }}</p>
+            </form>
+        </div>
+    </div>
 {% endblock content %}
