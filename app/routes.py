@@ -16,6 +16,8 @@ from datetime import datetime
 @login_required
 def consumer_home():
 	#print(session['user_type'], " Home : ", session['username'], file=sys.stderr)
+	if(session['user_type']!='Consumer'):
+		abort(403)
 	page=request.args.get('page',1,type=int)
 	item_list = None
 	form = SearchForm()
@@ -41,6 +43,8 @@ def consumer_home():
 @app.route('/manager_home',methods = ['GET','POST'])
 @login_required
 def manager_home():
+	if(session['user_type']!='Manager'):
+		abort(403)
 	curr_manager= Manager.query.filter_by(manager_id = session['manager_id']).first()
 	brand = curr_manager.brand
 	page = request.args.get('page',1,type = int)
@@ -50,13 +54,8 @@ def manager_home():
 @app.route('/manager_add_item',methods = ['GET','POST'])
 @login_required
 def manager_add_item():
-	if current_user.is_authenticated:
-		if session['user_type'] == "Consumer":
-			return redirect(url_for('consumer_home'))
-		elif session['user_type'] == "Manager":
-			return redirect(url_for('manager_home'))
-		else:
-			return redirect(url_for())
+	if(session['user_type']!='Manager'):
+		abort(403)
 	form=ItemaddForm()
 	if form.validate_on_submit():
 		curr_manager= Manager.query.filter_by(manager_id = session['manager_id']).first()
@@ -76,19 +75,33 @@ def manager_add_item():
 @app.route('manager/<int:item_id>')
 @login_required
 def manager_item(item_id):
-	if current_user.is_authenticated:
-		if session['user_type'] == "Consumer":
-			return redirect(url_for('consumer_home'))
-		elif session['user_type'] == "Manager":
-			return redirect(url_for('manager_home'))
-		else:
-			return redirect(url_for())
+	if(session['user_type']!='Manager'):
+		abort(403)
 	item = Item.query.filter_by(item_id = item_id).first_or_404();
 	itemcity = Itemcity.query.join(City,City.city_id=Itemcity.city_id)\
 					add_columns(Itemcity.city_id,Itemcity.quantity,City.city_name)\
 					.order_by(Itemcity.quantity.desc())\
 					.filter_by(item_id = item_id)
 	return render_template('manager_view_item.html',title ='View Item',item=item,itemcity = itemcity)
+
+@app.route('manager/<int:item_id>/<str:city_id>')
+@login_required
+def quantity_change(item_id,city_id):
+	if(session['user_type']!='Manager'):
+		abort(403)
+	curr_manager=Manager.query.filter_by(manager_id = session['manager_id']).first()
+	item = Item.query.filter_by(item_id = item_id).first()
+	if(curr_manager.brand != item.brand):
+		flash("Invalid Access")
+		return redirect(url_for(manager_home))
+	form = Changequantityform;
+	if form.validate_on_submit():
+		itemcity = Itemcity.query.filter_by(item_id=item_id,city_id=city_id)
+		itemcity.quantity+=form.quantity.data
+		item.quantity+=form.quantity.data
+		db.session.commit()
+		return redirect(url_for(manager_home))
+	return render_template("add_quantity.html",item=item,city_id=city_id,form=form)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
