@@ -284,6 +284,9 @@ def checkout():
 		amount+=x.quantity*x.price
 	if form.validate_on_submit():
 		place_order(cart_list)
+		for x in cart_list:
+			db.session.delete(x)
+		db.session.commit()
 		flash('Your order has been placed successfully','success')
 		return redirect(url_for('consumer_home'))
 	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
