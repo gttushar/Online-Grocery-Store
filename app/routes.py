@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, session, abort
 import sqlalchemy
 from sqlalchemy import func
-from sqlalchemy import text
+from sqlalchemy import text, and_
 from app import app
 from app import db
 import sys
@@ -311,5 +311,28 @@ def view_item(item_id):
 	if(session['user_type']!='Consumer'):
 		abort(403)
 	item=Item.query.get_or_404(item_id)
-	
-	return render_template('view_item.html',item=item)
+	x=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item.item_id)).first()
+	count=x.quantity
+	return render_template('view_item.html',item=item,count=count)
+
+@app.route("/cart_add/<int:item_id>")
+@login_required
+def cart_add(item_id):
+	if(session['user_type']!='Consumer'):
+		abort(403)
+	item=Item.query.get_or_404(item_id)
+	cart_item=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item_id)).first
+	cart_item.quantity+=1
+	db.session.commit()
+	return redirect(url_for('view_item'),item_id=item_id)
+
+@app.route("/cart_remove/<int:item_id>")
+@login_required
+def cart_remove(item_id):
+	if(session['user_type']!='Consumer'):
+		abort(403)
+	item=Item.query.get_or_404(item_id)
+	cart_item=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item_id)).first
+	cart_item.quantity-=1
+	db.session.commit()
+	return redirect(url_for('view_item'),item_id=item_id)
