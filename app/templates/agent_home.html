@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %} 
-    <h1> Orders by Agent - {{ session['username'] }} </h1>
+    <h3> Orders by Agent - {{ session['username'] }} </h3>
 
-    <p> <a href = {{ url_for('completed_deliveries', agent_id = session['userid']) }} > Orders Delivered </a> </p>
+    <p> <a href = {{ url_for('completed_orders', agent_id = session['userid']) }} > <u>View Orders Delivered</u> </a> </p>
   
     <p> PENDING ORDERS </p>
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->

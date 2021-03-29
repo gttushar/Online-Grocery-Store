@@ -38,7 +38,7 @@ class Consumer_Registration_Form(RegistrationForm,FlaskForm):
 
 class Manager_Registration_Form(RegistrationForm,FlaskForm):
     # basic_details = RegistrationForm()
-    brand = StringField('City', validators=[ DataRequired(), Length(max=30)])
+    brand = StringField('Brand', validators=[ DataRequired(), Length(max=30)])
     submit = SubmitField('Sign Up', validators=[ DataRequired() ])
 
     def validate_username(self,username):

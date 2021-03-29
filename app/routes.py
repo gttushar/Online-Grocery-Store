@@ -111,7 +111,7 @@ def login():
 		elif session['user_type'] == "Manager":
 			return redirect(url_for('manager_home'))
 		else:
-			return redirect(url_for())
+			return redirect(url_for('agent_home'))
 	form=LoginForm()
 	if form.validate_on_submit():
 		user=None
@@ -178,7 +178,7 @@ def register_consumer():
 		elif session['user_type'] == "Manager":
 			return redirect(url_for('manager_home'))
 		else:
-			return redirect(url_for())
+			return redirect(url_for('agent_home'))
 	form=Consumer_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, address, city_id, phone_no
@@ -201,7 +201,7 @@ def register_manager():
 		elif session['user_type'] == "Manager":
 			return redirect(url_for('manager_home'))
 		else:
-			return redirect(url_for())
+			return redirect(url_for('agent_home'))
 	form=Manager_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, brand
@@ -223,7 +223,7 @@ def register_agent():
 		elif session['user_type'] == "Manager":
 			return redirect(url_for('manager_home'))
 		else:
-			return redirect(url_for())
+			return redirect(url_for('agent_home'))
 	form=Agent_Registration_Form()
 	if form.validate_on_submit():
 		# cid, username, email, password_hash, city_id
@@ -397,4 +397,4 @@ def completed_orders(agent_id):
 									  'quantity':item.quantity, 'price':item_details.price})
 
 		completed_orders.append(order)
-	return render_template('completed_deliveries.html', completed_orders = completed_orders)
+	return render_template('completed_orders.html', completed_orders = completed_orders)
