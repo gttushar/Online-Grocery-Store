@@ -13,7 +13,7 @@
                 Amount : <span style="color:blue;">{{ order.amount }}</span><br>
                 Order status : <span style="color:green;">ON THE WAY</span><br>
                 Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
-                To be delivered by : <span style="color:blue;">{{ order.agent_name }}</span><br>
+                To be delivered by : <span style="color:blue;">{{ order.agent_id }}</span><br>
             </a>
     {% endfor %}
     {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}
@@ -29,7 +29,7 @@
                 Order status : <span style="color:green;">DELIVERED</span><br>
                 Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
                 Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
-                Delivered by : <span style="color:blue;">{{ order.agent_name }}</span><br>
+                Delivered by : <span style="color:blue;">{{ order.agent_id }}</span><br>
             </a>
     {% endfor %}
     {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}

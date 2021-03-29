@@ -380,7 +380,7 @@ def view_order(order_id):
 	order['agent_name'] = Delivery_agent.query.filter_by(agent_id=order_object.agent_id).first().username
 	order['contains'] = Contains.query.join(Item,Item.item_id==Contains.item_id)\
 		.filter(Contains.order_id==order_id)\
-			.add_columns(Item.name,Item.quantity,Item.brand,Item.price)
+			.add_columns(Item.name,Contains.quantity,Item.brand,Item.price)
 	print(type(order['contains']), file=sys.stderr)
 	return render_template('view_order.html',order=order)
 
