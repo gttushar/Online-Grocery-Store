@@ -323,29 +323,40 @@ def view_item(item_id):
 		abort(403)
 	item=Item.query.get_or_404(item_id)
 	x=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item.item_id)).first()
-	count=x.quantity
+	count=0
+	if x is not None:
+		count=x.quantity
 	return render_template('view_item.html',item=item,count=count)
 
 @app.route("/cart_add/<int:item_id>")
 @login_required
-def cart_add(item_id):
+def cart_add(item_id,count):
 	if(session['user_type']!='Consumer'):
 		abort(403)
 	item=Item.query.get_or_404(item_id)
-	cart_item=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item_id)).first
-	cart_item.quantity+=1
-	db.session.commit()
+	if count>0:
+		cart_item=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item_id)).first()
+		cart_item.quantity+=1
+		db.session.commit()
+	else:
+		x=Cart(cid=session['userid'],item_id=item.item_id,quantity=1)
+		db.session.add(x)
+		db.session.commit()
 	return redirect(url_for('view_item'),item_id=item_id)
 
 @app.route("/cart_remove/<int:item_id>")
 @login_required
-def cart_remove(item_id):
+def cart_remove(item_id,count):
 	if(session['user_type']!='Consumer'):
 		abort(403)
 	item=Item.query.get_or_404(item_id)
-	cart_item=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item_id)).first
-	cart_item.quantity-=1
-	db.session.commit()
+	cart_item=Cart.query.filter(and_(Cart.cid==session['userid'],Cart.item_id==item_id)).first()
+	if count>1:
+		cart_item.quantity-=1
+		db.session.commit()
+	else:
+		db.session.delete(cart_item)
+		db.session.commit()
 	return redirect(url_for('view_item'),item_id=item_id)
 
 @app.route('/agent_home',methods = ['GET','POST'])
