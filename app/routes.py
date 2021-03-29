@@ -72,7 +72,7 @@ def manager_add_item():
 		return redirect(url_for('manager_home'))
 	return render_template('manager_add_item.html', title='Add Item', form=form)
 
-@app.route('manager/<int:item_id>')
+@app.route('/manager/<int:item_id>')
 @login_required
 def manager_item(item_id):
 	if(session['user_type']!='Manager'):
@@ -84,7 +84,7 @@ def manager_item(item_id):
 					.filter_by(item_id = item_id)
 	return render_template('manager_view_item.html',title ='View Item',item=item,itemcity = itemcity)
 
-@app.route('manager/<int:item_id>/<str:city_id>')
+@app.route('/manager/<int:item_id>/<string:city_id>')
 @login_required
 def quantity_change(item_id,city_id):
 	if(session['user_type']!='Manager'):
@@ -92,7 +92,7 @@ def quantity_change(item_id,city_id):
 	curr_manager=Manager.query.filter_by(manager_id = session['userid']).first()
 	item = Item.query.filter_by(item_id = item_id).first()
 	if(curr_manager.brand != item.brand):
-		flash("Invalid Access")
+		flash("Invalid Access",'danger')
 		return redirect(url_for(manager_home))
 	form = Changequantityform();
 	if form.validate_on_submit():
@@ -123,14 +123,19 @@ def login():
 		elif form.user_type.data == "Delivery_agent":
 			user=Delivery_agent.query.filter_by(username=form.username.data).first() 
 		if user is None or not user.check_password(form.password.data):
-			flash('Invalid username or password')
+			flash('Invalid username or password','danger')
 			return redirect(url_for('login'))
 
 		session['username']=user.username
 		session['user_type']=form.user_type.data
-		session['userid']=user.userid
+		if form.user_type.data == "Consumer":
+			session['userid']=user.cid 
+		elif form.user_type.data == "Manager":
+			session['userid']=user.manager_id
+		else:
+			session['userid']=user.agent_id
 		login_user(user)
-		flash('User successfully logged in')
+		flash('User successfully logged in','success')
 		print(form.user_type.data + " successfully logged in", file=sys.stderr)
 		next_page=request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
@@ -179,7 +184,7 @@ def register_consumer():
 		user.cid=count+1
 		db.session.add(user)
 		db.session.commit()
-		flash('Congratulations, you are now a registered consumer!')
+		flash('Congratulations, you are now a registered consumer!','success')
 		return redirect(url_for('login'))
 	return render_template('register.html', title='Register', form=form)
 
@@ -201,7 +206,7 @@ def register_manager():
 		user.manager_id=count+1
 		db.session.add(user)
 		db.session.commit()
-		flash('Congratulations, you are now a registered manager!')
+		flash('Congratulations, you are now a registered manager!','success')
 		return redirect(url_for('login'))
 	return render_template('register.html', title='Register', form=form)
 
@@ -224,7 +229,7 @@ def register_agent():
 		user.pending_deliveries=0
 		db.session.add(user)
 		db.session.commit()
-		flash('Congratulations, you are now a registered delivery agent!')
+		flash('Congratulations, you are now a registered delivery agent!','success')
 		return redirect(url_for('login'))
 	return render_template('register.html', title='Register', form=form)
 
@@ -273,7 +278,7 @@ def checkout():
 		amount+=x.quantity*x.price
 	if form.validate_on_submit():
 		place_order(cart_list)
-		flash('Your order has been placed successfully')
+		flash('Your order has been placed successfully','success')
 		return redirect(url_for('consumer_home'))
 	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
 
