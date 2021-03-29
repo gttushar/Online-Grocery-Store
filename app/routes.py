@@ -45,10 +45,10 @@ def consumer_home():
 def manager_home():
 	if(session['user_type']!='Manager'):
 		abort(403)
-	curr_manager= Manager.query.filter_by(manager_id = session['manager_id']).first()
+	curr_manager= Manager.query.filter_by(manager_id = session['userid']).first()
 	brand = curr_manager.brand
 	page = request.args.get('page',1,type = int)
-	item_list = Item.query,filter_by(brand = brand).paginate(page = page,per_page = 20)
+	item_list = Item.query.filter_by(brand = brand).paginate(page = page,per_page = 20)
 	return render_template('manager_home.html',title = 'home',item_list = item_list,brand =brand)
 
 @app.route('/manager_add_item',methods = ['GET','POST'])
@@ -58,7 +58,7 @@ def manager_add_item():
 		abort(403)
 	form=ItemaddForm()
 	if form.validate_on_submit():
-		curr_manager= Manager.query.filter_by(manager_id = session['manager_id']).first()
+		curr_manager= Manager.query.filter_by(manager_id = session['userid']).first()
 		brand = curr_manager.brand
 		item = Item(name=form.name.data, category=form.category.data, 
 						description=form.description.data, price=form.price.data,brand = brand,totalsold=0,quantity=0)
@@ -78,8 +78,8 @@ def manager_item(item_id):
 	if(session['user_type']!='Manager'):
 		abort(403)
 	item = Item.query.filter_by(item_id = item_id).first_or_404();
-	itemcity = Itemcity.query.join(City,City.city_id=Itemcity.city_id)\
-					add_columns(Itemcity.city_id,Itemcity.quantity,City.city_name)\
+	itemcity = Itemcity.query.join(City,City.city_id==Itemcity.city_id)\
+					.add_columns(Itemcity.city_id,Itemcity.quantity,City.city_name)\
 					.order_by(Itemcity.quantity.desc())\
 					.filter_by(item_id = item_id)
 	return render_template('manager_view_item.html',title ='View Item',item=item,itemcity = itemcity)
@@ -89,7 +89,7 @@ def manager_item(item_id):
 def quantity_change(item_id,city_id):
 	if(session['user_type']!='Manager'):
 		abort(403)
-	curr_manager=Manager.query.filter_by(manager_id = session['manager_id']).first()
+	curr_manager=Manager.query.filter_by(manager_id = session['userid']).first()
 	item = Item.query.filter_by(item_id = item_id).first()
 	if(curr_manager.brand != item.brand):
 		flash("Invalid Access")
@@ -128,6 +128,7 @@ def login():
 
 		session['username']=user.username
 		session['user_type']=form.user_type.data
+		session['userid']=user.userid
 		login_user(user)
 		flash('User successfully logged in')
 		print(form.user_type.data + " successfully logged in", file=sys.stderr)
@@ -238,7 +239,7 @@ def view_cart():
     return render_template('view_cart.html',title='Cart',cart=cart_list)
 
 def place_order(cart_list):
-    x=Consumer.query.filter_by(Consumer.cid==session['cid'])
+    x=Consumer.query.filter_by(Consumer.cid==session['userid'])
     order_id=db.session.query(func.count('*')).select_from(Order).scalar()
     order_id+=1
     min_count=db.session.query(func.min('pending_deliveries')).select_from('Delivery_agent').scalar()
@@ -254,7 +255,7 @@ def place_order(cart_list):
         db.session.commit()
         amount+=y.price*y.quantity
     
-    order1=Order(order_id=order_id,cid=session['cid'],amount=amount,status='Order placed',\
+    order1=Order(order_id=order_id,cid=session['userid'],amount=amount,status='Order placed',\
         time_of_order=datetime.utcnow,time_of_delivery=None,agent_id=agent.agent_id)
     
 
@@ -273,7 +274,7 @@ def checkout():
 	if form.validate_on_submit():
 		place_order(cart_list)
 		flash('Your order has been placed successfully')
-		return redirect(url_for('home'))
+		return redirect(url_for('consumer_home'))
 	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
 
 @app.route('/orders')
@@ -303,3 +304,12 @@ def orders():
 
 		orders.append(order)
 	return render_template('orders.html', orders = orders)
+
+@app.route("/view_item/<int:item_id>")
+@login_required
+def view_item(item_id):
+	if(session['user_type']!='Consumer'):
+		abort(403)
+	item=Item.query.get_or_404(item_id)
+	
+	return render_template('view_item.html',item=item)
