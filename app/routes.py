@@ -406,9 +406,9 @@ def mark_order_delivered(order_id):
 		abort(403)
 	order = Order.query.filter_by(order_id = order_id).first()
 	if order.status == 'COMPLETE':
-		flash('Order id = ' + str(order_id) + ' is already delivered !!')
+		flash('Order id = ' + str(order_id) + ' is already delivered !!', 'danger')
 	elif order.status == 'DELIVERING':
 		order.status = 'COMPLETE'
 		db.session.commit()
-		flash('Order id = ' + str(order_id) + ' marked as DELIVERED ')
+		flash('Order id = ' + str(order_id) + ' marked as DELIVERED ', 'success')
 	return redirect(url_for('agent_home'))
