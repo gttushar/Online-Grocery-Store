@@ -94,7 +94,7 @@ def quantity_change(item_id,city_id):
 	if(curr_manager.brand != item.brand):
 		flash("Invalid Access")
 		return redirect(url_for(manager_home))
-	form = Changequantityform;
+	form = Changequantityform();
 	if form.validate_on_submit():
 		itemcity = Itemcity.query.filter_by(item_id=item_id,city_id=city_id)
 		itemcity.quantity+=form.quantity.data
