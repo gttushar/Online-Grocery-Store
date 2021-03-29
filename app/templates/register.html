@@ -2,88 +2,103 @@
 
 {% block content %} 
 <div class="login_form">
-    <div class="text-center">
+    <div class="text-left">
         <legend class="border-bottom mb-4">Sign Up</legend>
         <form action="" method="post" novalidate>
             {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <div class="form-group">
-                    <p>
-                        {{ form.username(placeholder="Username",size=32) }}
-                        {% for error in form.username.errors %} 
-                        <span style="color:red;">[{{error}}]</span>
-                        {% endfor %}
-                    </p>
+            <fieldset class="input-group">
+                <div class="input-group mb-4 input-group-md">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Username</span>
+                    </div>
+                    {{ form.username(class_="form-control",size=32) }}
+                    {% for error in form.username.errors %} 
+                    <span style="color:red;">[{{error}}]</span>
+                    {% endfor %}
                 </div>
-                <div class="form-group">
-                    <p>
-                        {{ form.email(placeholder="Email",size=32) }}
-                        {% for error in form.email.errors %} 
-                        <span style="color:red;">[{{error}}]</span>
-                        {% endfor %}
-                    </p>
+                <div class="input-group mb-4 input-group-md">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Email</span>
+                    </div>
+                    {{ form.email(class_="form-control",size=32) }}
+                    {% for error in form.email.errors %} 
+                    <span style="color:red;">[{{error}}]</span>
+                    {% endfor %}
+                    
                 </div>
-                <div class="form-group">
-                    <p>
-                        {{ form.password(placeholder="Password",size=32) }}
+                <div class="input-group mb-4 input-group-md">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Password</span>
+                    </div>
+                        {{ form.password(class_="form-control",size=32) }}
                         {% for error in form.password.errors %} 
                         <span style="color:red;">[{{error}}]</span>
                         {% endfor %}
                     </p>
                 </div>
-                <div class="form-group">
-                    <p>
-                        {{ form.confirm_password(placeholder="Confirm Password",size=32) }}
+                <div class="input-group mb-4 input-group-md">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Confirm Password</span>
+                    </div>
+                        {{ form.confirm_password(class_="form-control",size=32) }}
                         {% for error in form.confirm_password.errors %} 
                         <span style="color:red;">[{{error}}]</span>
                         {% endfor %}
-                    </p>
+                    
                 </div>
                 
                 {% if form.city_id %}
-                    <div class="form-group">
-                        <p>
-                            {{ form.city_id(placeholder="City",size=32) }}
-                            {% for error in form.city_id.errors %} 
-                            <span style="color:red;">[{{error}}]</span>
-                            {% endfor %}
-                        </p>
+                    <div class="input-group mb-4 input-group-md">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">City</span>
+                        </div>
+                        {{ form.city_id(class_="form-control",size=32) }}
+                        {% for error in form.city_id.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                        
                     </div>
                 {% endif %}
                 
                 
                 {% if form.address %}
-                <div class="form-group">
-                    <p>
-                        {{ form.address(placeholder="Address",size=32) }}
-                        {% for error in form.address.errors %} 
-                        <span style="color:red;">[{{error}}]</span>
-                        {% endfor %}
-                    </p>
+                <div class="input-group mb-4 input-group-md">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Address</span>
+                    </div>
+                    {{ form.address(class_="form-control",size=32) }}
+                    {% for error in form.address.errors %} 
+                    <span style="color:red;">[{{error}}]</span>
+                    {% endfor %}
+                    
                 </div>
                 {% endif %}
                 
                 
                 {% if form.phone_no %}
-                    <div class="form-group">
-                        <p>
-                            {{ form.phone_no(placeholder="Phone no.",size=32) }}
-                            {% for error in form.phone_no.errors %} 
-                            <span style="color:red;">[{{error}}]</span>
-                            {% endfor %}
-                        </p>
+                    <div class="input-group mb-4 input-group-md">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Phone No.</span>
+                        </div>
+                        {{ form.phone_no(class_="form-control",size=32) }}
+                        {% for error in form.phone_no.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                        
                     </div>
                 {% endif %}
                 
                 
                 {% if form.brand %}
-                    <div class="form-group">
-                        <p>
-                            {{ form.brand(placeholder="Brand",size=32) }}
-                            {% for error in form.brand.errors %} 
-                            <span style="color:red;">[{{error}}]</span>
-                            {% endfor %}
-                        </p>
+                    <div class="input-group mb-4 input-group-md">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Brand</span>
+                        </div>
+                        {{ form.brand(class_="form-control",size=32) }}
+                        {% for error in form.brand.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                        
                     </div>
                 {% endif %}
                 
