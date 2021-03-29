@@ -296,33 +296,6 @@ def checkout():
 		flash('Your order has been placed successfully','success')
 		return redirect(url_for('consumer_home'))
 	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
-@app.route('/orders')
-def orders():
-	if not current_user.is_authenticated:
-		return redirect(url_for('login'))
-	if(session['user_type']!='Consumer'):
-		abort(403)
-	username  = session['username']
-	cid = Consumer.query.filter_by(username=username).first().cid
-	print(Order.query.filter_by(cid=cid).all(), file=sys.stderr)
-	orders = []
-	for order_object in Order.query.filter_by(cid=cid).all():
-		order = {}
-		order['order_id'] = order_object.order_id
-		order['amount'] = order_object.amount
-		order['status'] = order_object.status
-		order['time_of_order'] = order_object.time_of_order
-		order['time_of_delivery'] = order_object.time_of_delivery
-		order['agent_name'] = Delivery_agent.query.filter_by(agent_id=order_object.agent_id).first().username
-		contains = Contains.query.filter_by(order_id = order['order_id']).all()
-		# Items in order
-		order['contains'] = []
-		for item in contains:
-			item_name = Item.query.filter_by(item_id=item.item_id).first().name
-			order['contains'].append({'item_id':item.item_id, 'item_name':item_name, 'quantity':item.quantity})
-
-		orders.append(order)
-	return render_template('orders.html', orders = orders)
 
 @app.route("/view_item/<int:item_id>")
 @login_required
@@ -419,6 +392,45 @@ def completed_orders(agent_id):
 		completed_orders.append(order)
 	return render_template('completed_orders.html', completed_orders = completed_orders)
 
+@app.route('/view_order/<int:order_id>')
+@login_required
+def view_order(order_id):
+	if not (session['user_type']=='Consumer' or session['user_type']=='Delivery_agent'):
+		abort(403)
+	order_object =  Order.query.filter_by(order_id=order_id).first()
+	order = {}
+	order['order_id'] = order_object.order_id
+	order['consumer_name'] = Consumer.query.filter_by(cid=order_object.cid).first().username
+	order['amount'] = order_object.amount
+	order['status'] = order_object.status
+	order['time_of_order'] = order_object.time_of_order
+	order['time_of_delivery'] = order_object.time_of_delivery
+	order['agent_name'] = Delivery_agent.query.filter_by(agent_id=order_object.agent_id).first().username
+	order['contains'] = Contains.query.join(Item,Item.item_id==Contains.item_id)\
+		.filter(Contains.order_id==order_id)\
+			.add_columns(Item.name,Item.quantity,Item.brand,Item.price)
+	print(type(order['contains']), file=sys.stderr)
+	return render_template('view_order.html',order=order)
+
+@app.route('/consumer_orders')
+def consumer_orders():
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
+	if(session['user_type']!='Consumer'):
+		abort(403)
+	username  = session['username']
+	cid = session['userid']
+	# print(Order.query.filter_by(cid=cid).all(), file=sys.stderr)
+	orders =  Order.query.filter_by(cid=cid).all()
+	pending_orders = []
+	completed_orders = []
+	for order_object in orders:
+		if order_object.status == 'DELIVERING':
+			pending_orders.append(order_object)
+		else:
+			completed_orders.append(order_object)
+	return render_template('consumer_orders.html', pending_orders = pending_orders, completed_orders = completed_orders)
+
 @app.route('/mark_order_delivered/<int:order_id>')
 @login_required
 def mark_order_delivered(order_id):
@@ -429,16 +441,7 @@ def mark_order_delivered(order_id):
 		flash('Order id = ' + str(order_id) + ' is already delivered !!', 'danger')
 	elif order.status == 'DELIVERING':
 		order.status = 'COMPLETE'
+		order.time_of_delivery = datetime.utcnow()
 		db.session.commit()
 		flash('Order id = ' + str(order_id) + ' marked as DELIVERED ', 'success')
 	return redirect(url_for('agent_home'))
-
-@app.route('/view_order/<int:order_id>')
-@login_required
-def view_order(order_id):
-	if(session['user_type']!='Consumer'):
-		abort(403)
-	order_list=Contains.query.join(Item,Item.item_id==Contains.item_id)\
-		.filter(Contains.order_id==order_id)\
-			.add_columns(Item.name,Item.brand,Item.price)
-	return render_template('consumer_view_order.html',order_list=order_list)
