@@ -139,12 +139,12 @@ def login():
 		print(form.user_type.data + " successfully logged in", file=sys.stderr)
 		next_page=request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
-			if session['user_type']=="Consumer" :
+			if session['user_type']=='Consumer':
 				next_page = url_for('consumer_home')
-			elif session['user_type']=="Manager" :
-				next_page = url_for('manager_home')
-			else :
-				next_page = url_for('agent_home')
+			elif session['user_type']=='Manager':
+				next_page=url_for('manager_home')
+			else:
+				next_page=url_for('agent_home')
 		return redirect(next_page)
 	return render_template('login.html',title='Sign In',form=form)
 
@@ -346,56 +346,3 @@ def cart_remove(item_id):
 	cart_item.quantity-=1
 	db.session.commit()
 	return redirect(url_for('view_item'),item_id=item_id)
-
-
-@app.route('/agent_home',methods = ['GET','POST'])
-@login_required
-def agent_home():
-	if(session['user_type']!='Delivery_agent'):
-		abort(403)
-	# agent = Delivery_agent.query.filter_by(agent_id = session['userid']).first()
-	pending_orders = []
-	for order_object in Order.query.filter_by(agent_id = session['userid'], status = "DELIVERING").all():
-		order = {}
-		order['order_id'] = order_object.order_id
-		order['consumer_name'] = Consumer.query.filter_by(cid=order_object.cid).first().username
-		order['amount'] = order_object.amount
-		order['status'] = order_object.status
-		order['time_of_order'] = order_object.time_of_order
-		order['time_of_delivery'] = order_object.time_of_delivery
-		contains = Contains.query.filter_by(order_id = order['order_id']).all()
-		# Items in order
-		order['contains'] = []
-		for item in contains:
-			item_details = Item.query.filter_by(item_id=item.item_id).first()
-			order['contains'].append({'item_id':item.item_id, 'item_name':item_details.name, \
-									  'quantity':item.quantity, 'price':item_details.price})
-
-		pending_orders.append(order)
-	return render_template('agent_home.html',title = 'home', pending_orders = pending_orders)
-
-
-@app.route('/completed_orders/<int:agent_id>')
-@login_required
-def completed_orders(agent_id):
-	if(session['user_type']!='Delivery_agent'):
-		abort(403)
-	completed_orders = []
-	for order_object in Order.query.filter_by(agent_id = agent_id, status = "COMPLETE").all():
-		order = {}
-		order['order_id'] = order_object.order_id
-		order['consumer_name'] = Consumer.query.filter_by(cid=order_object.cid).first().username
-		order['amount'] = order_object.amount
-		order['status'] = order_object.status
-		order['time_of_order'] = order_object.time_of_order
-		order['time_of_delivery'] = order_object.time_of_delivery
-		contains = Contains.query.filter_by(order_id = order['order_id']).all()
-		# Items in order
-		order['contains'] = []
-		for item in contains:
-			item_details = Item.query.filter_by(item_id=item.item_id).first()
-			order['contains'].append({'item_id':item.item_id, 'item_name':item_details.name, \
-									  'quantity':item.quantity, 'price':item_details.price})
-
-		completed_orders.append(order)
-	return render_template('completed_deliveries.html', completed_orders = completed_orders)
