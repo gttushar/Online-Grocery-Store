@@ -3,38 +3,43 @@
 {% block content %}
 	<h1>Hi, {{ current_user.username }} !</h1> 
 	<h3>Search</h3>
-    	<form action="" method="post" novalidate>
-        <p>
-            {{ form.category.label }} {{ form.category }}
-            {% for error in form.category.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.search_text.label }}<br>
-            {{ form.search_text(size=32) }}
-            {% for error in form.search_text.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    	</form>
-	{% for item in item_list.items %}
+	<form action="" method="post" novalidate>
+		<div class="form-group">
+			{{ form.category(class="custom-control custom-radio") }}
+		
+			{% for error in form.category.errors %} 
+			<span style="color:red;">[{{error}}]</span>
+			{% endfor %}
+		
+		</div>
 		<p>
-	        Item Name : <span style="color:green;">{{ item.name }}</span><br>
-	    </p>
-	    <p>
-	        Category : <span style="color:green;">{{ item.category }}</span><br>
-	    </p>
-	    <p>
-	        Brand : <span style="color:green;">{{ item.brand }}</span><br>
-	    </p>
-	    <p>
-	        Price : <span style="color:green;"> {{ item.price }}</span><br>
-	    </p>
-	    <p>
-	        Available : <span style="color:green;">{{ item.quantity }}</span><br>
-	    </p>
+			{{ form.search_text(size=32) }}
+			{{ form.submit(class="btn btn-primary") }}
+			
+			{% for error in form.search_text.errors %} 
+			<span style="color:red;">[{{error}}]</span>
+			{% endfor %}
+			
+		</p>
+	</form>
+	{% for item in item_list.items %}
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Item Name : <span style="color:green;">{{ item.name }}</span></h4>
+				<p>
+					Category : <span style="color:green;">{{ item.category }}</span>
+				</p>
+				<p>
+					Brand : <span style="color:green;">{{ item.brand }}</span>
+				</p>
+				<p>
+					Price : <span style="color:green;"> {{ item.price }}</span>
+				</p>
+				<p>
+					Available : <span style="color:green;">{{ item.quantity }}</span>
+				</p>
+			</div>
+		</div>
 	{% endfor %}
 	{% for page_num in item_list.iter_pages()%}
 		{% if page_num %}

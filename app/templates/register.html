@@ -1,73 +1,97 @@
 {% extends "base.html" %}
 
 {% block content %} 
-    <h1> Sign Up</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-            {% for error in form.username.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-            {% for error in form.email.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.confirm_password.label }}<br>
-            {{ form.confirm_password(size=32) }}
-            {% for error in form.confirm_password.errors %} 
-            <span style="color:red;">[{{error}}]</span>
-            {% endfor %}
-        </p>
-        {% if form.city_id %}
-            <p>
-                {{ form.city_id.label }}<br>
-                {{ form.city_id(size=32) }}
-                {% for error in form.city_id.errors %} 
-                <span style="color:red;">[{{error}}]</span>
-                {% endfor %}
-            </p>
-        {% endif %}
-        {% if form.address %}
-            <p>
-                {{ form.address.label }}<br>
-                {{ form.address(size=32) }}
-                {% for error in form.address.errors %} 
-                <span style="color:red;">[{{error}}]</span>
-                {% endfor %}
-            </p>
-        {% endif %}
-        {% if form.phone_no %}
-            <p>
-                {{ form.phone_no.label }}<br>
-                {{ form.phone_no(size=32) }}
-                {% for error in form.phone_no.errors %} 
-                <span style="color:red;">[{{error}}]</span>
-                {% endfor %}
-            </p>
-        {% endif %}
-        {% if form.brand %}
-            <p>
-                {{ form.brand.label }}<br>
-                {{ form.brand(size=32) }}
-                {% for error in form.brand.errors %} 
-                <span style="color:red;">[{{error}}]</span>
-                {% endfor %}
-            </p>
-        {% endif %}
-        <p>{{ form.submit() }}</p>
-    </form>
+<div class="login_form">
+    <div class="text-center">
+        <legend class="border-bottom mb-4">Sign Up</legend>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    <p>
+                        {{ form.username(placeholder="Username",size=32) }}
+                        {% for error in form.username.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="form-group">
+                    <p>
+                        {{ form.email(placeholder="Email",size=32) }}
+                        {% for error in form.email.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="form-group">
+                    <p>
+                        {{ form.password(placeholder="Password",size=32) }}
+                        {% for error in form.password.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="form-group">
+                    <p>
+                        {{ form.confirm_password(placeholder="Confirm Password",size=32) }}
+                        {% for error in form.confirm_password.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                
+                {% if form.city_id %}
+                    <div class="form-group">
+                        <p>
+                            {{ form.city_id(placeholder="City",size=32) }}
+                            {% for error in form.city_id.errors %} 
+                            <span style="color:red;">[{{error}}]</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                {% endif %}
+                
+                
+                {% if form.address %}
+                <div class="form-group">
+                    <p>
+                        {{ form.address(placeholder="Address",size=32) }}
+                        {% for error in form.address.errors %} 
+                        <span style="color:red;">[{{error}}]</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                {% endif %}
+                
+                
+                {% if form.phone_no %}
+                    <div class="form-group">
+                        <p>
+                            {{ form.phone_no(placeholder="Phone no.",size=32) }}
+                            {% for error in form.phone_no.errors %} 
+                            <span style="color:red;">[{{error}}]</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                {% endif %}
+                
+                
+                {% if form.brand %}
+                    <div class="form-group">
+                        <p>
+                            {{ form.brand(placeholder="Brand",size=32) }}
+                            {% for error in form.brand.errors %} 
+                            <span style="color:red;">[{{error}}]</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                {% endif %}
+                
+            </fieldset>
+            <div class="form-group">
+                <p>{{ form.submit(class="btn btn-outline-info") }}</p>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock content %}
