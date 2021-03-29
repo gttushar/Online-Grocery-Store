@@ -65,7 +65,8 @@ def manager_add_item():
 		count=db.session.query(func.count('*')).select_from(Item).scalar()
 		item.item_id=count+1
 		db.session.add(item)
-		for city in city.session.query().all():
+		Citylist = City.query.all()
+		for city in Citylist:
 			itemcity = Itemcity(item_id=item.item_id,city_id=city.city_id,quantity=0)
 			db.session.add(itemcity)
 		db.session.commit()
@@ -81,10 +82,10 @@ def manager_item(item_id):
 	itemcity = Itemcity.query.join(City,City.city_id==Itemcity.city_id)\
 					.add_columns(Itemcity.city_id,Itemcity.quantity,City.city_name)\
 					.order_by(Itemcity.quantity.desc())\
-					.filter_by(item_id = item_id)
+					.filter(Itemcity.item_id == item_id)
 	return render_template('manager_view_item.html',title ='View Item',item=item,itemcity = itemcity)
 
-@app.route('/manager/<int:item_id>/<string:city_id>')
+@app.route('/manager/<int:item_id>/<string:city_id>',methods=['GET','POST'])
 @login_required
 def quantity_change(item_id,city_id):
 	if(session['user_type']!='Manager'):
@@ -96,11 +97,11 @@ def quantity_change(item_id,city_id):
 		return redirect(url_for(manager_home))
 	form = Changequantityform();
 	if form.validate_on_submit():
-		itemcity = Itemcity.query.filter_by(item_id=item_id,city_id=city_id)
-		itemcity.quantity+=form.quantity.data
-		item.quantity+=form.quantity.data
+		itemcity = Itemcity.query.filter_by(item_id=item_id,city_id=city_id).first()
+		itemcity.quantity +=form.quantity.data
+		item.quantity +=form.quantity.data
 		db.session.commit()
-		return redirect(url_for(manager_home))
+		return redirect("/manager_home")
 	return render_template("add_quantity.html",item=item,city_id=city_id,form=form)
 
 @app.route('/login',methods=['GET','POST'])
