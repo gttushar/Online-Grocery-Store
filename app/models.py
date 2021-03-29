@@ -25,7 +25,6 @@ class Consumer(UserMixin, db.Model):
 
     def get_id(self):
         return self.username
-    
 
 
 class Manager(UserMixin, db.Model):

@@ -68,7 +68,7 @@ class Agent_Registration_Form(RegistrationForm,FlaskForm):
 
 class SearchForm(FlaskForm):
     category=RadioField('Search by',default='Product',choices=[('choice1','Brand'),('choice2','Product'),('choice3','Category')])
-    search_text=TextAreaField(None,validators=[DataRequired()])
+    search_text=StringField(None,validators=[DataRequired()])
     submit=SubmitField('Search')
 
 class CheckoutForm(FlaskForm):
@@ -79,7 +79,7 @@ class CheckoutForm(FlaskForm):
 class ItemaddForm(FlaskForm):
     name = StringField('Name',validators=[DataRequired(),Length(max=50)])
     category = StringField('Category',validators=[DataRequired()])
-    description = StringField('Description',validators=[DataRequired(),Length(max = 100)])
+    description = TextAreaField('Description',validators=[DataRequired(),Length(max = 100)])
     price = DecimalField('Price',validators=[DataRequired()],places=2)
 
 class Changequantityform(FlaskForm):
