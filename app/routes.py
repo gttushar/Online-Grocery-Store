@@ -139,7 +139,12 @@ def login():
 		print(form.user_type.data + " successfully logged in", file=sys.stderr)
 		next_page=request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
-			next_page = url_for('consumer_home')
+			if session['user_type']=="Consumer" :
+				next_page = url_for('consumer_home')
+			elif session['user_type']=="Manager" :
+				next_page = url_for('manager_home')
+			else :
+				next_page = url_for('agent_home')
 		return redirect(next_page)
 	return render_template('login.html',title='Sign In',form=form)
 
