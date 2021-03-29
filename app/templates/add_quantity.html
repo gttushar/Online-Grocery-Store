@@ -5,12 +5,12 @@
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.quantity.label }}<br>
-            {{ form.quantity() }}
-            {% for error in form.quantity.errors %} 
+            {{ form.Quantity.label }}<br>
+            {{ form.Quantity() }}
+            {% for error in form.Quantity.errors %} 
             <span style="color:red;">[{{error}}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ form.submit(class="btn btn-outline-info") }}</p>
     </form>
 {% endblock content %}

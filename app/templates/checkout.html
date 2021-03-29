@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
-                    <h3><a href="{{ url_for('view_item', item_id=x.item_id) }}">{{ x.item_name }}</a></h3>
+                    <h3><a href="{{ url_for('view_item', item_id=x.item_id) }}">{{ x.name }}</a></h3>
                 </div>
                 <p class="font-weight-bold">{{ x.brand }}</p>
                 <p class="font-weight-bold">{{ x.price }}</p>
@@ -14,7 +14,7 @@
             </div>
         </div>
     {% endfor %} 
-    <p class="font-weight-bold>
+    <p class="font-weight-bold">
         <h3>Total amount= {{amount}}</h3>
     </p>
     <form action="" method="post" novalidate>

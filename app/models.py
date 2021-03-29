@@ -82,7 +82,7 @@ class Order(db.Model):
     amount = db.Column(db.Float(precision=5),nullable=False)
     status = db.Column(db.String(15),nullable=False)
     time_of_order = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    time_of_delivery = db.Column(db.DateTime,default=datetime.utcnow)
+    time_of_delivery = db.Column(db.DateTime)
     agent_id=db.Column(db.Integer,db.ForeignKey('delivery_agent.agent_id'),nullable=False)
 
 class City(db.Model):

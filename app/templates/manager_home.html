@@ -14,7 +14,7 @@
 		</tr>
 		{% for item in item_list.items %}
 		<tr>
-			<td><a href = "{{url_for('manager_item',item_id=item.item_id)}}">{{ item.item_id }}</a>></td>
+			<td><a href = "{{url_for('manager_item',item_id=item.item_id)}}">{{ item.item_id }}</a></td>
 			<td><a href = "{{url_for('manager_item',item_id=item.item_id)}}">{{ item.name }}</a></td>
 			<td>{{ item.category }}</td>
 			<td>{{ item.price }}</td>

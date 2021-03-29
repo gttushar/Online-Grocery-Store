@@ -98,8 +98,8 @@ def quantity_change(item_id,city_id):
 	form = Changequantityform();
 	if form.validate_on_submit():
 		itemcity = Itemcity.query.filter_by(item_id=item_id,city_id=city_id).first()
-		itemcity.quantity +=form.quantity.data
-		item.quantity +=form.quantity.data
+		itemcity.quantity +=form.Quantity.data
+		item.quantity +=form.Quantity.data
 		db.session.commit()
 		return redirect("/manager_home")
 	return render_template("add_quantity.html",item=item,city_id=city_id,form=form)
@@ -255,24 +255,31 @@ def view_cart():
     return render_template('view_cart.html',title='Cart',cart=cart_list,x=x)
 
 def place_order(cart_list):
-    x=Consumer.query.filter_by(Consumer.cid==session['userid'])
+    x=Consumer.query.filter(Consumer.cid==session['userid']).first()
     order_id=db.session.query(func.count('*')).select_from(Order).scalar()
     order_id+=1
-    min_count=db.session.query(func.min('pending_deliveries')).select_from('Delivery_agent').scalar()
+    min_count=db.session.query(func.min(Delivery_agent.pending_deliveries)).scalar()
+    print(min_count)
     agent=Delivery_agent.query.filter(Delivery_agent.pending_deliveries==min_count).first()
     amount=0
 
     for y in cart_list: 
-        z=Itemcity.query.filter(Itemcity.city_id==x.city_id,Itemcity.item_id==y.item_id)
+        z=Itemcity.query.filter(and_(Itemcity.city_id==x.city_id,Itemcity.item_id==y.item_id)).first()
+        item=Item.query.filter_by(item_id=y.item_id).first()
         z.quantity-=y.quantity
+        item.quantity-=y.quantity
+        item.totalsold+=y.quantity
+        amount+=y.price*y.quantity
         db.session.commit()
         order_item=Contains(order_id=order_id,item_id=y.item_id,quantity=y.quantity)
         db.session.add(order_item)
         db.session.commit()
-        amount+=y.price*y.quantity
+
     
-    order1=Order(order_id=order_id,cid=session['userid'],amount=amount,status='Order placed',\
-        time_of_order=datetime.utcnow,time_of_delivery=None,agent_id=agent.agent_id)
+    order1=Order(order_id=order_id,cid=session['userid'],amount=amount,status='DELIVERING',\
+        time_of_delivery=None,agent_id=agent.agent_id)
+    db.session.add(order1)
+    db.session.commit()
     
 
 @app.route('/checkout', methods=['GET','POST'])
@@ -280,7 +287,6 @@ def place_order(cart_list):
 def checkout():
 	if(session['user_type']!='Consumer'):
 		abort(403)
-
 	amount=0
 	form=CheckoutForm()
 	cart_list=Cart.query.join(Item,Cart.item_id==Item.item_id)\
@@ -290,12 +296,14 @@ def checkout():
 		amount+=x.quantity*x.price
 	if form.validate_on_submit():
 		place_order(cart_list)
-		for x in cart_list:
-			db.session.delete(x)
+		a=Cart.query.filter(Cart.cid==session['userid'])
+		for ab in a:
+			db.session.delete(ab)
 		db.session.commit()
 		flash('Your order has been placed successfully','success')
 		return redirect(url_for('consumer_home'))
-	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount)
+	return render_template('checkout.html',title='Checkout',cart=cart_list,amount=amount,form =form)
+
 
 @app.route("/view_item/<int:item_id>")
 @login_required

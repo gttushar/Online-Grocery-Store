@@ -67,7 +67,7 @@ class Agent_Registration_Form(RegistrationForm,FlaskForm):
             raise ValidationError('Email id is already registered')
 
 class SearchForm(FlaskForm):
-    category=RadioField('Search by',default='Product',choices=[('choice1','Brand'),('choice2','Product'),('choice3','Category')])
+    category=RadioField('Search by',default='Product',choices=[('Brand','Brand'),('Product','Product'),('Category','Category')])
     search_text=StringField(None,validators=[DataRequired()])
     submit=SubmitField('Search')
 
@@ -81,6 +81,8 @@ class ItemaddForm(FlaskForm):
     category = StringField('Category',validators=[DataRequired()])
     description = TextAreaField('Description',validators=[DataRequired(),Length(max = 100)])
     price = DecimalField('Price',validators=[DataRequired()],places=2)
+    submit=SubmitField('Add Item')
 
 class Changequantityform(FlaskForm):
-    quantity = IntegerField('Quantity',validators=[DataRequired(),NumberRange(min=0)])
+    Quantity = IntegerField('Quantity',validators=[DataRequired(),NumberRange(min=0)])
+    submit=SubmitField('Change Quantity')
