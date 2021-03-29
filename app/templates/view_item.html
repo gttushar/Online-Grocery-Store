@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ item.item_name }}</h1>
+    <h2>{{ item.brand }}</h2>
+    <h4>{{ item.description }}</h4>
+    {% if x>0 %} 
+        <a href="{{ url_for('cart_add') }}"> Add to Cart</a>
+    {% else %} 
+        <a href="{{ url_for('cart_remove',item_id=item.item_id) }}"> - </a>
+        <h3>{{ x }}</h3>
+        <a href="{{ url_for('cart_add',item_id=item.item_id) }}"> + </a>
+    {% endif %} 
+{% endblock content %}
+        
