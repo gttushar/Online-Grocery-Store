@@ -7,16 +7,20 @@
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
     {% for order in pending_orders %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
-            <p> Order #{{ i['i'] }} : </p>
-            <a href="{{ url_for('mark_order_delivered',order_id = order.order_id) }}" style = "float:right;color:#ADD8E6"> 
-                <u>Mark as delivered</u> 
-            </a>
-            <a href = "{{ url_for('view_order', order_id = order.order_id) }}">
-                Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
-                Amount : <span style="color:blue;">{{ order.amount }}</span><br>
-                Order status : <span style="color:green;">ON THE WAY</span><br>
-                Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
-            </a>
+
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title"> Order #{{ i['i'] }} : </p>
+                    <a href="{{ url_for('mark_order_delivered',order_id = order.order_id) }}" style = "float:right;color:#ADD8E6" class="btn btn-info"> 
+                        <u>Mark as delivered</u> 
+                    </a>
+                    <a href = "{{ url_for('view_order', order_id = order.order_id) }}">
+                        Order_id : <span style="color:blue;">{{ order.order_id }}</span></a><br>
+                    Amount : <span style="color:blue;">{{ order.amount }}</span><br>
+                    Order status : <span style="color:green;">ON THE WAY</span><br>
+                    Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
+                </div>
+            </div>
     {% endfor %}
     {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}
  
@@ -24,14 +28,18 @@
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
     {% for order in completed_orders %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
-            <p> Order #{{ i['i'] }} : </p>
-            <a href = "{{ url_for('view_order', order_id = order.order_id) }}">
-                Order_id : <span style="color:blue;">{{ order.order_id }}</span><br>
-                Amount : <span style="color:blue;">{{ order.amount }}</span><br>
-                Order status : <span style="color:green;">DELIVERED</span><br>
-                Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
-                Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
-            </a>
+
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title"> Order #{{ i['i'] }} : </p>
+                    <a href = "{{ url_for('view_order', order_id = order.order_id) }}">
+                        Order_id : <span style="color:blue;">{{ order.order_id }}</span></a><br>
+                        Amount : <span style="color:blue;">{{ order.amount }}</span><br>
+                        Order status : <span style="color:green;">DELIVERED</span><br>
+                        Ordered on : <span style="color:blue;">{{ order.time_of_order }}</span><br>
+                        Delivered on : <span style="color:blue;">{{ order.time_of_delivery }}</span><br>
+                </div>
+            </div>
     {% endfor %}
     {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}
 
