@@ -7,7 +7,6 @@
             <table class="table table-responsive">
             <tr>
                 <td> Order_id </td> <td> <span style="color:brown;">{{ order.order_id }}</span></td>
-                <td> Order status   </td> <td> <span style="color:green;">PENDING</span></td>
             </tr>
             <tr>
                 <td> Consumer </td> <td> <span style="color:brown;">{{ order.consumer_name }}</span></td>
@@ -15,7 +14,11 @@
             </tr>
             <tr>
                 <td> Ordered on </td> <td> <span style="color:brown;">{{ order.time_of_order }}</span></td>
+                <td> Order status   </td> <td> <span style="color:green;">{{ order.status }}</span></td>
+            </tr>
+            <tr>
                 <td> Delivered on </td> <td> <span style="color:brown;">{{ order.time_of_delivery }}</span></td>
+                <td> Delivered by </td> <td> <span style="color:brown;">{{ order.agent_name }}</span></td>
             </tr>
             <tr class = "table-active">  <th colspan="4" style="text-align:center"> ITEMS </th> </tr>
             <tr> 
