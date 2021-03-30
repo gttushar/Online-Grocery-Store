@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Hi, {{ current_user.username }} !</h1><br>
+	<h2>{{ brand }}</h2><br>
+
+	<h4> ITEM LIST CORRESPONDING TO YOUR BRAND</h4>
+	<table class="table table-hover table-responsive" >
+		<tr class ="table-dark">
+			<th> Item_id </th>
+			<th> Name </th>
+			<th> Category </th>
+			<th> Price(per unit) </th>
+		</tr>
+		{% for item in item_list.items %}
+		<tr>
+			<td><a href = "{{url_for('manager_item',item_id=item.item_id)}}">{{ item.item_id }}</a></td>
+			<td><a href = "{{url_for('manager_item',item_id=item.item_id)}}">{{ item.name }}</a></td>
+			<td>{{ item.category }}</td>
+			<td>{{ item.price }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	{% for page_num in item_list.iter_pages() %}
+		{% if page_num %}
+			<a href = "{{url_for('manager_home',page=page_num)}}" class ="btn btn-primary btn-sm" > {{ page_num }} </a>
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+{% endblock %}

@@ -19,25 +19,41 @@ def consumer_home():
 	if(session['user_type']!='Consumer'):
 		abort(403)
 	page=request.args.get('page',1,type=int)
+	consumer = Consumer.query.filter_by(cid=session['userid']).first()
+	city = consumer.city_id
 	item_list = None
 	form = SearchForm()
 	if request.method == 'POST':
 		if form.category.data == "Brand":
-			item_list = Item.query.filter_by(brand = form.search_text.data)\
+			item_list = Item.query.join(Itemcity,Itemcity.item_id==Item.item_id)\
+			.add_columns(Item.item_id,Item.name,Item.category,Item.brand,Item.price,\
+				Itemcity.quantity,Itemcity.city_id,Item.totalsold)\
+			.filter(and_(func.lower(Item.brand)==func.lower(form.search_text.data),Itemcity.city_id==city))\
 				.order_by(Item.totalsold.desc())\
 				.paginate(page=page,per_page=200)
 			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 		if form.category.data == "Product":
-			item_list = Item.query.filter_by(name = form.search_text.data)\
+			item_list = Item.query.join(Itemcity,Itemcity.item_id==Item.item_id)\
+			.add_columns(Item.item_id,Item.name,Item.category,Item.brand,Item.price,\
+				Itemcity.quantity,Itemcity.city_id,Item.totalsold)\
+			.filter(and_(func.lower(Item.name)==func.lower(form.search_text.data),Itemcity.city_id==city))\
 				.order_by(Item.totalsold.desc())\
 				.paginate(page=page,per_page=200)
 			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 		if form.category.data == "Category":
-			item_list = Item.query.filter_by(category = form.search_text.data)\
+			item_list = Item.query.join(Itemcity,Itemcity.item_id==Item.item_id)\
+			.add_columns(Item.item_id,Item.name,Item.category,Item.brand,Item.price,\
+				Itemcity.quantity,Itemcity.city_id,Item.totalsold)\
+			.filter(and_(func.lower(Item.category)==func.lower(form.search_text.data),Itemcity.city_id==city))\
 				.order_by(Item.totalsold.desc())\
 				.paginate(page=page,per_page=200)
 			return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
-	item_list = Item.query.order_by(Item.totalsold.desc()).paginate(page=page,per_page=20)
+	item_list = Item.query.join(Itemcity,Itemcity.item_id==Item.item_id)\
+			.add_columns(Item.item_id,Item.name,Item.category,Item.brand,Item.price,\
+				Itemcity.quantity,Itemcity.city_id,Item.totalsold)\
+			.filter(Itemcity.city_id==city)\
+				.order_by(Item.totalsold.desc())\
+				.paginate(page=page,per_page=20)
 	return render_template('consumer_home.html',title='home',form=form,item_list=item_list)
 
 @app.route('/manager_home',methods = ['GET','POST'])
@@ -256,11 +272,15 @@ def view_cart():
 
 def place_order(cart_list):
     x=Consumer.query.filter(Consumer.cid==session['userid']).first()
+    city = x.city_id
     order_id=db.session.query(func.count('*')).select_from(Order).scalar()
     order_id+=1
-    min_count=db.session.query(func.min(Delivery_agent.pending_deliveries)).scalar()
+    min_count=db.session.query(func.min(Delivery_agent.pending_deliveries))\
+    		.filter(Delivery_agent.city_id == city).scalar()
     print(min_count)
-    agent=Delivery_agent.query.filter(Delivery_agent.pending_deliveries==min_count).first()
+    agent=Delivery_agent.query.\
+	    filter(and_(Delivery_agent.pending_deliveries==min_count,\
+	    	Delivery_agent.city_id == city)).first()
     amount=0
 
     for y in cart_list: 
@@ -279,6 +299,8 @@ def place_order(cart_list):
     order1=Order(order_id=order_id,cid=session['userid'],amount=amount,status='DELIVERING',\
         time_of_delivery=None,agent_id=agent.agent_id)
     db.session.add(order1)
+    db.session.commit()
+    agent.pending_deliveries+=1
     db.session.commit()
     
 
@@ -393,7 +415,10 @@ def consumer_orders():
 	username  = session['username']
 	cid = session['userid']
 	# print(Order.query.filter_by(cid=cid).all(), file=sys.stderr)
-	orders =  Order.query.filter_by(cid=cid).all()
+	orders =  Order.query.join(Delivery_agent,Order.agent_id==Delivery_agent.agent_id)\
+				.filter(Order.cid==cid)\
+				.add_columns(Order.order_id,Order.amount,Order.time_of_order,\
+					Order.time_of_delivery,Delivery_agent.username,Order.status,Order.cid)
 	pending_orders = []
 	completed_orders = []
 	for order_object in orders:
@@ -409,11 +434,14 @@ def mark_order_delivered(order_id):
 	if(session['user_type']!='Delivery_agent'):
 		abort(403)
 	order = Order.query.filter_by(order_id = order_id).first()
+	agent_id1=order.agent_id
+	agent = Delivery_agent.query.filter_by(agent_id=agent_id1).first()
 	if order.status == 'COMPLETE':
 		flash('Order id = ' + str(order_id) + ' is already delivered !!', 'danger')
 	elif order.status == 'DELIVERING':
 		order.status = 'COMPLETE'
 		order.time_of_delivery = datetime.utcnow()
+		agent.pending_deliveries-=1
 		db.session.commit()
 		flash('Order id = ' + str(order_id) + ' marked as DELIVERED ', 'success')
 	return redirect(url_for('agent_home'))
