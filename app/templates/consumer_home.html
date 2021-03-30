@@ -23,6 +23,7 @@
 		</p>
 	</form>
 	{% for item in item_list.items %}
+		{%if item.quantity > 0%}
 		<div class="card">
 			<div class="card-body">
 				<h4 class="card-title">Item Name : <span style="color:green;"><a href = "{{url_for('view_item',item_id = item.item_id)}}">{{ item.name }}</a></span></h4>
@@ -40,6 +41,7 @@
 				</p>
 			</div>
 		</div>
+		{% endif %}
 	{% endfor %}
 	{% for page_num in item_list.iter_pages()%}
 		{% if page_num %}
