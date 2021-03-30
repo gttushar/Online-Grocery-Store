@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h2>{{item.item_id}}.		{{item.name}}</h2><br>
+	<h4>CATEGORY : {{item.category}}</h4>
+	<h4>BRAND : {{item.brand}}</h4>
+	<h4>PRICE : RS. {{item.price}}</h4>
+	<h4>TOTAL AVAILABLE : {{item.quantity}}</h4>
+	<h4>TOTAL SOLD : {{item.totalsold}}</h4>
+	<h5><p>DESCRIPTION : {{item.description}}</p></h5><BR><BR>
+	<h4> ITEM QUANTITY IN CORRESPONDING CITIES </h4>
+	<table class="table table-dark table-hover table-responsive">
+		<tr>
+			<th> City - City ID </th>
+			<th> Quantity </th>
+		</tr>
+		{% for city in itemcity %}
+		<tr>
+			<th>{{city.city_name}} - {{ city.city_id }}</th>
+			<th>{{ city.quantity }}</th>
+			<th><a href = "{{url_for('quantity_change',item_id = item.item_id,city_id = city.city_id)}}" class = "btn btn-info" >Add Quantity</a></th>
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
