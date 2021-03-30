@@ -5,7 +5,7 @@ This is the DBMS Mini Project-1 for Sping-2021. It has been developed by the mem
 - Tushar Gupta(18CS30044)
 - Proteet Paul(18CS10065)
 
-######Link to YouTube video presentation: https://youtu.be/FrOsiUFlTgo 
+###### Link to YouTube video presentation: https://youtu.be/FrOsiUFlTgo 
 
 # Technologies Used:
 This project has been developed using flask framework. Other dependencies used in the backend include:
