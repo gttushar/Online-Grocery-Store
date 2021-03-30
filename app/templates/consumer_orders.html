@@ -7,7 +7,6 @@
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
     {% for order in pending_orders %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
-
             <div class="card">
                 <div class="card-body">
                     <p class="card-title"> Order #{{ i['i'] }} : </p>
@@ -19,7 +18,6 @@
                     To be delivered by : <span style="color:blue;">{{ order.username }}</span><br>
                 </div>
             </div>
-
     {% endfor %}
     {% if i['i'] == 0: %} <span style="color:red;"> None </span> {% endif %}
  
@@ -27,7 +25,6 @@
     {% set i={'i': 0} %} <!-- counter for number of variables printed till now -->
     {% for order in completed_orders %}
             {% if i.update({'i' : i['i']+1}) %}{% endif %}  <!-- updating the counter i -->
-
             <div class="card">
                 <div class="card-body">
                     <p class="card-title"> Order #{{ i['i'] }} : </p>
