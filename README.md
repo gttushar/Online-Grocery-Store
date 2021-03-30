@@ -18,15 +18,15 @@ This project has been developed using flask framework. Other dependencies used i
 The front end has been developed using HTML,CSS and Bootstrap 4.
 
 # Installation:
-RUn the following shell command to install the required dependencies:
+Run the following shell command to install the required dependencies:
 $ pip install -r requirements.txt 
 
 # Execution:
 Assuming the above mentioned dependencies have been installed, the following shell commands need to be executed:
 In Linux:
-$ export FLASK_APP=app/grocery_store.py
+> export FLASK_APP=app/grocery_store.py
 
-$ flask run
+> flask run
 
 In Windows:
 > set FLASK_APP=app/grocery_store.py
