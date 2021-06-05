@@ -1,9 +1,9 @@
 # Online-Grocery-Store
 # Introduction:
-This is the DBMS Mini Project-1 for Sping-2021. It has been developed by the members of Group-14:
-- Mayank Raj(18CS30028)
-- Tushar Gupta(18CS30044)
-- Proteet Paul(18CS10065)
+This is an Online Grocery Store app with basic features.
+This app has been developed by :
+- Yasharth Gupta
+  Future Institute of Engineering nd Management, Kolkata
 
 ## Link to YouTube video presentation: https://youtu.be/FrOsiUFlTgo 
 
