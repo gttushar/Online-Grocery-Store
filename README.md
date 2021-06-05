@@ -2,7 +2,7 @@
 # Introduction:
 This is an Online Grocery Store app with basic features.
 This app has been developed by :
-- YASHARTH 
+- YASHARTH GUPTA
 
   Future Institute of Engineering and Management, Kolkata
 
