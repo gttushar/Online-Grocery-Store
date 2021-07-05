@@ -1,10 +1,6 @@
 # Online-Grocery-Store
 # Introduction:
 This is an Online Grocery Store app with basic features.
-This app has been developed by :
-- YASHARTH GUPTA
-
-  Future Institute of Engineering and Management, Kolkata
 
 ## Link to YouTube video presentation: https://youtu.be/FrOsiUFlTgo 
 
